@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador SCL - Automatización</title>
+    <title>Simulador SCL Avanzado - Automatización</title>
     
     <!-- Fuentes Google -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -25,11 +25,7 @@
             --border-color: #333;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Roboto', sans-serif;
@@ -50,21 +46,13 @@
             align-items: center;
             justify-content: space-between;
         }
-
-        .header-logo {
-            height: 40px;
-        }
-
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+        .header-logo { height: 40px; }
+        .header-title { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; color: var(--text-light); }
 
         /* MAIN LAYOUT (3 COLUMNAS) */
         .main-grid {
             display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-columns: 300px 1fr 350px;
             flex: 1;
             gap: 15px;
             padding: 15px;
@@ -87,6 +75,7 @@
             text-align: center;
             border-bottom: 1px solid var(--border-color);
             color: var(--sena-green);
+            text-transform: uppercase;
         }
 
         /* COLUMNA 1: TEMARIO Y TEORÍA */
@@ -95,19 +84,21 @@
             flex-direction: column;
             padding: 10px;
             gap: 5px;
+            background-color: #1a1a1a;
+            max-height: 250px;
+            overflow-y: auto;
         }
-
         .btn-leccion {
             background-color: #333;
             color: white;
             border: 1px solid #444;
-            padding: 10px;
+            padding: 8px 10px;
             text-align: left;
             cursor: pointer;
             border-radius: 4px;
             transition: 0.2s;
+            font-size: 0.9rem;
         }
-
         .btn-leccion:hover, .btn-leccion.active {
             background-color: var(--sena-green);
             border-color: var(--sena-green);
@@ -117,14 +108,15 @@
             flex: 1;
             background-color: var(--bg-white);
             color: var(--text-dark);
-            padding: 15px;
+            padding: 20px;
             overflow-y: auto;
             border-top: 2px solid var(--sena-green);
         }
-        
-        .teoria-container h3 { margin-bottom: 10px; color: var(--sena-green); }
-        .teoria-container p { margin-bottom: 10px; line-height: 1.5; font-size: 0.9rem; }
-        .teoria-container code { background: #eee; padding: 2px 4px; border-radius: 3px; font-family: 'Fira Code', monospace; }
+        .teoria-container h3 { margin-bottom: 15px; color: var(--sena-green); border-bottom: 1px solid #ddd; padding-bottom: 5px;}
+        .teoria-container p { margin-bottom: 12px; line-height: 1.6; font-size: 0.95rem; }
+        .teoria-container ul { margin-left: 20px; margin-bottom: 12px; font-size: 0.95rem;}
+        .teoria-container code { background: #f4f4f4; padding: 2px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; color: #d32f2f; font-weight: bold;}
+        .teoria-container pre { background: #2b2b2b; color: #a9b7c6; padding: 10px; border-radius: 5px; margin-bottom: 15px; overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 0.85rem;}
 
         /* COLUMNA 2: EDITOR Y CONSOLA */
         .toolbar {
@@ -134,7 +126,6 @@
             background-color: #252525;
             border-bottom: 1px solid var(--border-color);
         }
-
         .btn {
             padding: 8px 15px;
             border: none;
@@ -143,199 +134,209 @@
             cursor: pointer;
             color: white;
             transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-
-        .btn-compile { background-color: #555; }
-        .btn-compile:hover { background-color: #777; }
+        .btn-compile { background-color: #1976d2; }
+        .btn-compile:hover { background-color: #115293; }
         .btn-run { background-color: var(--sena-green); }
         .btn-run:hover { background-color: var(--sena-green-hover); }
         .btn-stop { background-color: #d32f2f; }
         .btn-stop:hover { background-color: #b71c1c; }
 
-        .editor-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .CodeMirror {
-            flex: 1;
-            font-family: 'Fira Code', monospace;
-            font-size: 14px;
-        }
+        .editor-container { flex: 1; display: flex; flex-direction: column; }
+        .CodeMirror { flex: 1; font-family: 'Fira Code', monospace; font-size: 15px; }
 
         .consola {
-            height: 120px;
-            background-color: #000;
+            height: 150px;
+            background-color: #0d0d0d;
             color: #00ff00;
             font-family: 'Fira Code', monospace;
             padding: 10px;
             overflow-y: auto;
             border-top: 2px solid var(--border-color);
             font-size: 0.85rem;
+            line-height: 1.4;
         }
 
         /* COLUMNA 3: SIMULACIÓN HMI */
         .hmi-container {
             flex: 1;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #2a2a2a;
+            background-color: #222;
             position: relative;
         }
 
-        /* Elementos HMI */
-        .motor-box {
-            width: 60px;
-            height: 60px;
-            background: #555;
-            border: 3px solid #777;
+        /* Indicadores LED */
+        .led-panel {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: #111;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+        .led-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #aaa;
+            font-weight: bold;
+        }
+        .led {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
+            background-color: #333;
+            border: 2px solid #555;
+            margin-bottom: 5px;
+            transition: 0.1s;
+        }
+        .led.active-green { background-color: #00ff00; box-shadow: 0 0 10px #00ff00; }
+        .led.active-red { background-color: #ff0000; box-shadow: 0 0 10px #ff0000; animation: blink 1s infinite; }
+
+        @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0.4;} 100% {opacity: 1;} }
+
+        /* Tanque y Motor */
+        .planta-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .motor-box {
+            width: 70px;
+            height: 50px;
+            background: #444;
+            border: 3px solid #777;
+            border-radius: 5px 5px 0 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: -10px;
             z-index: 2;
             position: relative;
         }
-        
-        .aspas {
-            width: 40px;
-            height: 10px;
-            background-color: #ccc;
-            border-radius: 5px;
-        }
-
-        .spin {
-            animation: spinAnim 0.5s linear infinite;
-            background-color: var(--sena-green); /* Cambia color al girar */
-        }
-
+        .aspas { width: 40px; height: 8px; background-color: #aaa; border-radius: 4px; }
+        .spin { animation: spinAnim 0.3s linear infinite; background-color: var(--sena-green); }
         @keyframes spinAnim { 100% { transform: rotate(360deg); } }
 
         .tanque {
-            width: 120px;
+            width: 140px;
             height: 180px;
             border: 4px solid #888;
             border-top: none;
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 15px 15px;
             position: relative;
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255,255,255,0.05);
             overflow: hidden;
-            margin-bottom: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
-
         .liquido {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 0%; /* Controlado por JS */
-            background-color: #007bff;
+            height: 0%; 
+            background: linear-gradient(to right, #0288d1, #29b6f6);
             transition: height 0.1s linear;
+        }
+        .escala {
+            position: absolute;
+            left: 5px;
+            bottom: 5px;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.7rem;
+            font-family: monospace;
+            z-index: 5;
         }
 
         .sensor-temp {
             background: #000;
-            color: red;
+            color: #ff5252;
             font-family: 'Fira Code', monospace;
             border: 2px solid #555;
-            padding: 5px 10px;
-            font-size: 1.2rem;
+            padding: 8px 15px;
+            font-size: 1.4rem;
             margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255,0,0,0.2);
         }
 
-        .hmi-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
+        .hmi-buttons { display: flex; gap: 20px; }
         .btn-hmi {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             border: 4px solid #222;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.6);
             font-weight: bold;
+            font-size: 0.85rem;
+            color: white;
+            text-shadow: 1px 1px 2px black;
         }
-        
-        .btn-hmi:active { transform: scale(0.95); }
-        .hmi-start { background-color: #4caf50; color: white; }
-        .hmi-stop { background-color: #f44336; color: white; }
+        .btn-hmi:active { transform: scale(0.92); box-shadow: inset 0 3px 5px rgba(0,0,0,0.8); }
+        .hmi-start { background: linear-gradient(145deg, #4caf50, #2e7d32); }
+        .hmi-stop { background: linear-gradient(145deg, #f44336, #c62828); }
 
         /* Watch Table */
         .watch-table-container {
-            height: 200px;
+            height: 250px;
             background-color: var(--bg-white);
             color: var(--text-dark);
             overflow-y: auto;
             border-top: 2px solid var(--sena-green);
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 6px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            position: sticky;
-            top: 0;
-        }
+        table { width: 100%; border-collapse: collapse; font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+        th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
+        th { background-color: #f2f2f2; position: sticky; top: 0; color: #333;}
+        .val-true { color: #2e7d32; font-weight: bold; }
+        .val-false { color: #c62828; font-weight: bold; }
+        .val-num { color: #0277bd; font-weight: bold; }
 
         /* FOOTER */
         footer {
             background-color: var(--panel-dark);
             border-top: 1px solid var(--border-color);
-            padding: 10px 20px;
+            padding: 12px 20px;
             text-align: right;
             color: var(--sena-green);
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
         }
-
     </style>
 </head>
 <body>
 
     <!-- Encabezado -->
     <header>
-        <!-- Logo SENA público -->
         <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Sena_Colombia_logo.svg" alt="SENA" class="header-logo">
-        <div class="header-title">SIMULADOR SCL - TEXTO ESTRUCTURADO</div>
-        <div style="width: 40px;"></div> <!-- Espaciador para centrar -->
+        <div class="header-title">SIMULADOR SCL - IEC 61131-3</div>
+        <div style="width: 40px;"></div> 
     </header>
 
     <!-- Contenido Principal -->
     <div class="main-grid">
         
-        <!-- Columna 1: Currículum -->
+        <!-- Columna 1: Temario -->
         <div class="column">
-            <div class="col-header">TEMARIO</div>
-            <div class="menu-lecciones" id="menu-lecciones">
-                <!-- Se generan desde JS -->
-            </div>
-            <div class="teoria-container" id="teoria-content">
-                <h3>Bienvenido</h3>
-                <p>Selecciona una lección del menú superior para comenzar.</p>
-            </div>
+            <div class="col-header">MÓDULOS DE APRENDIZAJE</div>
+            <div class="menu-lecciones" id="menu-lecciones"></div>
+            <div class="teoria-container" id="teoria-content"></div>
         </div>
 
-        <!-- Columna 2: Editor y Consola -->
+        <!-- Columna 2: Editor SCL -->
         <div class="column">
-            <div class="col-header">EDITOR SCL (OB1)</div>
+            <div class="col-header">EDITOR DE TEXTO ESTRUCTURADO (OB1)</div>
             <div class="toolbar">
-                <button class="btn btn-compile" onclick="compilar()">⚙️ Compilar</button>
+                <button class="btn btn-compile" onclick="compilar()">⚙️ Compilar Código</button>
                 <button class="btn btn-run" onclick="iniciarPLC()">▶️ RUN</button>
                 <button class="btn btn-stop" onclick="detenerPLC()">⏹️ STOP</button>
             </div>
@@ -343,32 +344,55 @@
                 <textarea id="code-editor"></textarea>
             </div>
             <div class="consola" id="consola">
-                > Sistema inicializado. Listo para programar.<br>
+                > Sistema inicializado. Selecciona un módulo a la izquierda.<br>
             </div>
         </div>
 
-        <!-- Columna 3: Planta Virtual y Watch Table -->
+        <!-- Columna 3: HMI -->
         <div class="column">
-            <div class="col-header">HMI Y WATCH TABLE</div>
+            <div class="col-header">PLANTA VIRTUAL Y VARIABLES</div>
             <div class="hmi-container">
                 
-                <!-- Motor -->
-                <div class="motor-box" id="motor-visual">
-                    <div class="aspas" id="aspas-visual"></div>
-                </div>
-                
-                <!-- Tanque -->
-                <div class="tanque">
-                    <div class="liquido" id="tanque-liquido"></div>
+                <!-- Panel de Indicadores Discretos -->
+                <div class="led-panel">
+                    <div class="led-indicator">
+                        <div class="led" id="led-valvula"></div>
+                        VÁLVULA
+                    </div>
+                    <div class="led-indicator">
+                        <div class="led" id="led-alarma"></div>
+                        ALARMA
+                    </div>
                 </div>
 
-                <!-- Sensor Temperatura -->
+                <!-- Planta -->
+                <div class="planta-wrapper">
+                    <div class="motor-box" id="motor-visual">
+                        <div class="aspas" id="aspas-visual"></div>
+                    </div>
+                    <div class="tanque">
+                        <div class="liquido" id="tanque-liquido"></div>
+                        <div class="escala">0% -- 100%</div>
+                    </div>
+                </div>
+
                 <div class="sensor-temp" id="temp-display">00.0 °C</div>
 
-                <!-- Botonera Física -->
                 <div class="hmi-buttons">
-                    <button class="btn-hmi hmi-start" onmousedown="setVar('Start_Button', true)" onmouseup="setVar('Start_Button', false)" onmouseleave="setVar('Start_Button', false)">START</button>
-                    <button class="btn-hmi hmi-stop" onmousedown="setVar('Stop_Button', true)" onmouseup="setVar('Stop_Button', false)" onmouseleave="setVar('Stop_Button', false)">STOP</button>
+                    <!-- Eventos táctiles y de ratón para emular un pulsador real -->
+                    <button class="btn-hmi hmi-start" 
+                        onmousedown="presionarBoton('Start_Button', true)" 
+                        onmouseup="presionarBoton('Start_Button', false)" 
+                        onmouseleave="presionarBoton('Start_Button', false)"
+                        ontouchstart="presionarBoton('Start_Button', true)"
+                        ontouchend="presionarBoton('Start_Button', false)">START</button>
+                    
+                    <button class="btn-hmi hmi-stop" 
+                        onmousedown="presionarBoton('Stop_Button', true)" 
+                        onmouseup="presionarBoton('Stop_Button', false)" 
+                        onmouseleave="presionarBoton('Stop_Button', false)"
+                        ontouchstart="presionarBoton('Stop_Button', true)"
+                        ontouchend="presionarBoton('Stop_Button', false)">STOP</button>
                 </div>
             </div>
 
@@ -377,58 +401,55 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>Variable (Tag)</th>
                             <th>Tipo</th>
                             <th>Valor</th>
                         </tr>
                     </thead>
-                    <tbody id="watch-table-body">
-                        <!-- Generado por JS -->
-                    </tbody>
+                    <tbody id="watch-table-body"></tbody>
                 </table>
             </div>
         </div>
 
     </div>
 
-    <!-- Pie de página con firma requerida -->
+    <!-- Pie de página -->
     <footer>
         Realizado por: ING. BRAYAN CAMILO NOREÑA AGUDELO
     </footer>
 
-    <!-- Scripts de CodeMirror -->
+    <!-- Scripts CodeMirror -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/pascal/pascal.min.js"></script>
 
     <script>
         // ==========================================
-        // 1. CONFIGURACIÓN DEL EDITOR (CodeMirror)
+        // 1. CONFIGURACIÓN DEL EDITOR
         // ==========================================
         const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
             lineNumbers: true,
-            mode: "pascal", // Pascal es visualmente el más cercano a SCL
+            mode: "pascal", // Usamos pascal por similitud sintáctica
             theme: "darcula",
             indentUnit: 4,
             matchBrackets: true
         });
 
         // ==========================================
-        // 2. ESTADO GLOBAL DEL PLC (Memoria Virtual)
+        // 2. ESTADO GLOBAL DEL PLC (Memoria)
         // ==========================================
         let PLC = {
-            Start_Button: false, // BOOL
-            Stop_Button: false,  // BOOL
-            Motor_On: false,     // BOOL
-            Valvula_Llenado: false, // BOOL
-            Valvula_Vaciado: false, // BOOL
-            Nivel_Tanque: 0.0,   // REAL (0 a 100)
-            Temperatura: 25.0    // REAL
+            Start_Button: false, 
+            Stop_Button: false,  
+            Motor_On: false,     
+            Valvula_Llenado: false, 
+            Alarma_Nivel: false,
+            Nivel_Tanque: 0.0,   
+            Temperatura: 25.0    
         };
 
-        // Tipos de datos para la Watch Table
         const DataTypes = {
             Start_Button: 'BOOL', Stop_Button: 'BOOL', Motor_On: 'BOOL', 
-            Valvula_Llenado: 'BOOL', Valvula_Vaciado: 'BOOL', 
+            Valvula_Llenado: 'BOOL', Alarma_Nivel: 'BOOL',
             Nivel_Tanque: 'REAL', Temperatura: 'REAL'
         };
 
@@ -436,225 +457,42 @@
         let compiledJS = "";
 
         // ==========================================
-        // 3. LECCIONES Y TEORÍA (Curriculum)
+        // 3. MÓDULOS DE APRENDIZAJE (TEORÍA NORMA IEC 61131-3)
         // ==========================================
         const lecciones = [
             {
-                titulo: "L1: Asignaciones Básicas",
-                teoria: `<h3>Asignaciones en SCL</h3>
-                         <p>En el lenguaje SCL (Texto Estructurado), la asignación de valores a una variable no se hace con un simple igual (<code>=</code>), sino con el operador <code>:=</code>.</p>
-                         <p>El símbolo <code>=</code> se usa estrictamente para comparar (ej. <code>IF a = b THEN</code>).</p>
-                         <p><b>Nota:</b> Mantén presionado el botón START en el HMI para probar este código.</p>`,
-                codigo: `// Asigna directamente el estado del botón al motor\nMotor_On := Start_Button;\n\n// El nivel sube lentamente si el motor gira\nValvula_Llenado := Motor_On;`
+                titulo: "1. Fundamentos y Asignación",
+                teoria: `<h3>Sintaxis SCL (IEC 61131-3)</h3>
+                         <p>El Texto Estructurado (SCL) es un lenguaje de alto nivel basado en Pascal. Las características clave son:</p>
+                         <ul>
+                            <li>La asignación de valores usa <code>:=</code> (ej. <code>Variable := 10;</code>).</li>
+                            <li>Toda instrucción debe terminar en punto y coma <code>;</code>.</li>
+                            <li>El símbolo <code>=</code> se usa <b>sólo</b> para comparar.</li>
+                            <li>Los comentarios se escriben con <code>//</code> o <code>(* ... *)</code>.</li>
+                         </ul>
+                         <p><b>Práctica:</b> Conecta directamente el pulsador de START al Motor.</p>`,
+                codigo: `// Asignación directa (Bobina directa en Ladder)\nMotor_On := Start_Button;\n\n// El tanque se llena solo si el motor está encendido\nValvula_Llenado := Motor_On;`
             },
             {
-                titulo: "L2: Condicional IF-ELSE",
-                teoria: `<h3>Estructuras de Control (IF)</h3>
-                         <p>Las sentencias condicionales permiten tomar decisiones lógicas en el PLC.</p>
-                         <p>Sintaxis básica:</p>
-                         <code>IF condicion THEN<br>&nbsp;&nbsp;accion;<br>END_IF;</code>
-                         <p>Ejemplo clásico: Enclavamiento (Set/Reset) sin usar bloques.</p>`,
-                codigo: `// Lógica de Set (Arranque)\nIF Start_Button = TRUE THEN\n    Motor_On := TRUE;\nEND_IF;\n\n// Lógica de Reset (Parada)\nIF Stop_Button = TRUE THEN\n    Motor_On := FALSE;\nEND_IF;`
+                titulo: "2. Lógica Booleana y IF",
+                teoria: `<h3>Condicionales IF-THEN</h3>
+                         <p>Permiten ejecutar código basado en condiciones lógicas (AND, OR, NOT).</p>
+                         <pre>IF condicion THEN\n    sentencias;\nELSIF otra_condicion THEN\n    sentencias;\nELSE\n    sentencias;\nEND_IF;</pre>
+                         <p><b>Práctica:</b> Realiza un "Enclavamiento" (Set/Reset) para el Motor. Nota que los pulsadores HMI son de contacto momentáneo, por eso necesitas memorizar el estado.</p>`,
+                codigo: `// Lógica de SET (Arranque memorizado)\nIF Start_Button = TRUE THEN\n    Motor_On := TRUE;\nEND_IF;\n\n// Lógica de RESET (Parada)\nIF Stop_Button = TRUE THEN\n    Motor_On := FALSE;\nEND_IF;`
             },
             {
-                titulo: "L3: Matemáticas Analógicas",
-                teoria: `<h3>Operaciones y Escalado</h3>
-                         <p>SCL es ideal para operaciones matemáticas con variables tipo REAL (Punto flotante).</p>
-                         <p>En esta lección simularemos que si la válvula está abierta, el nivel del tanque aumenta. Si supera 100, se detiene.</p>`,
-                codigo: `IF Start_Button THEN\n    Valvula_Llenado := TRUE;\nEND_IF;\n\nIF Stop_Button THEN\n    Valvula_Llenado := FALSE;\nEND_IF;\n\n// Matemáticas simples de simulación\nIF Valvula_Llenado = TRUE THEN\n    Nivel_Tanque := Nivel_Tanque + 0.5;\nEND_IF;\n\n// Limitar el nivel al 100%\nIF Nivel_Tanque > 100.0 THEN\n    Nivel_Tanque := 100.0;\n    Valvula_Llenado := FALSE;\n    Motor_On := TRUE; // Encender agitador\nEND_IF;`
+                titulo: "3. Matemáticas Analógicas",
+                teoria: `<h3>Cálculos con Reales (REAL)</h3>
+                         <p>En SCL podemos utilizar operadores aritméticos (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>).</p>
+                         <p>En esta simulación, simularemos un transmisor de nivel. Si la válvula está abierta, sumamos líquido por cada ciclo de scan.</p>
+                         <p><i>Nota: En un PLC real, esto se hace en un OB cíclico (OB30) multiplicando por el Ts.</i></p>`,
+                codigo: `// Enclavamiento de válvula\nIF Start_Button THEN Valvula_Llenado := TRUE; END_IF;\nIF Stop_Button THEN Valvula_Llenado := FALSE; END_IF;\n\n// Integración matemática de nivel\nIF Valvula_Llenado THEN\n    Nivel_Tanque := Nivel_Tanque + 0.5;\nEND_IF;\n\n// Limitar el tanque y encender alarma\nIF Nivel_Tanque >= 100.0 THEN\n    Nivel_Tanque := 100.0;\n    Valvula_Llenado := FALSE;\n    Alarma_Nivel := TRUE;\nELSE\n    Alarma_Nivel := FALSE;\nEND_IF;`
             },
             {
-                titulo: "L4: Control BATCH (Final)",
-                teoria: `<h3>Proyecto: Control de Mezcla</h3>
-                         <p>Une todo lo aprendido: 1. Presiona START para llenar. 2. Al llegar a 80%, cierra la válvula y enciende el motor agitador. 3. Presiona STOP para vaciar el tanque y apagar todo.</p>`,
-                codigo: `// Control de Vaciado y Parada Emergencia\nIF Stop_Button THEN\n    Valvula_Llenado := FALSE;\n    Motor_On := FALSE;\n    Nivel_Tanque := 0.0; // Vaciado rápido\nEND_IF;\n\n// Control de Llenado\nIF Start_Button AND Nivel_Tanque < 80.0 THEN\n    Valvula_Llenado := TRUE;\n    Motor_On := FALSE;\nEND_IF;\n\nIF Valvula_Llenado THEN\n    Nivel_Tanque := Nivel_Tanque + 1.0;\nEND_IF;\n\n// Control del Agitador al llegar al SetPoint\nIF Nivel_Tanque >= 80.0 THEN\n    Valvula_Llenado := FALSE;\n    Motor_On := TRUE;\n    // Aumentar temperatura por agitación\n    Temperatura := Temperatura + 0.1;\nEND_IF;\n\n// Reset de temperatura al vaciar\nIF Nivel_Tanque = 0.0 THEN\n    Temperatura := 25.0;\nEND_IF;`
-            }
-        ];
-
-        // Inicializar Menú
-        function initMenu() {
-            const menu = document.getElementById('menu-lecciones');
-            lecciones.forEach((lec, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-leccion';
-                btn.innerText = lec.titulo;
-                btn.onclick = () => cargarLeccion(index, btn);
-                menu.appendChild(btn);
-            });
-            // Cargar la primera por defecto
-            cargarLeccion(0, menu.firstChild);
-        }
-
-        function cargarLeccion(index, btnNode) {
-            // Actualizar botones
-            document.querySelectorAll('.btn-leccion').forEach(b => b.classList.remove('active'));
-            if(btnNode) btnNode.classList.add('active');
-
-            // Actualizar teoría
-            document.getElementById('teoria-content').innerHTML = lecciones[index].teoria;
-            
-            // Cargar código
-            editor.setValue(lecciones[index].codigo);
-            detenerPLC(); // Por seguridad detener al cambiar lección
-        }
-
-        // ==========================================
-        // 4. LÓGICA DEL "COMPILADOR" (Transpilador SCL a JS)
-        // ==========================================
-        function compilar() {
-            detenerPLC();
-            let sclCode = editor.getValue();
-            
-            try {
-                // Parseo ligero mediante Expresiones Regulares
-                let jsCode = sclCode;
-
-                // 1. Comentarios de bloque (* ... *) a /* ... */
-                jsCode = jsCode.replace(/\(\*/g, '/*').replace(/\*\)/g, '*/');
-                
-                // 2. Comparaciones (SCL usa '=' para comparar, JS usa '==')
-                // Primero protegemos el := para no dañarlo
-                jsCode = jsCode.replace(/:=/g, '___ASSIGN___');
-                jsCode = jsCode.replace(/(?<![<>=!])=(?![=])/g, '=='); // Convierte = suelto en ==
-                jsCode = jsCode.replace(/___ASSIGN___/g, '='); // Devuelve el operador de asignación convertido a JS
-
-                // 3. Estructuras de Control (Mayúsculas o minúsculas)
-                jsCode = jsCode.replace(/\bIF\b/gi, 'if(');
-                jsCode = jsCode.replace(/\bTHEN\b/gi, '){');
-                jsCode = jsCode.replace(/\bELSIF\b/gi, '}else if(');
-                jsCode = jsCode.replace(/\bELSE\b/gi, '}else{');
-                jsCode = jsCode.replace(/\bEND_IF;?/gi, '}');
-
-                // 4. Operadores lógicos
-                jsCode = jsCode.replace(/\bAND\b/gi, '&&');
-                jsCode = jsCode.replace(/\bOR\b/gi, '||');
-                jsCode = jsCode.replace(/\bNOT\b/gi, '!');
-
-                // 5. booleanos
-                jsCode = jsCode.replace(/\bTRUE\b/gi, 'true');
-                jsCode = jsCode.replace(/\bFALSE\b/gi, 'false');
-
-                compiledJS = jsCode;
-                logConsola("> Compilación exitosa (0 errores).", "#39A900");
-                
-            } catch (err) {
-                logConsola("> Error de compilación: " + err.message, "#ff5555");
-                compiledJS = "";
-            }
-        }
-
-        // ==========================================
-        // 5. MOTOR DE EJECUCIÓN Y HMI
-        // ==========================================
-        function iniciarPLC() {
-            if (!compiledJS) {
-                logConsola("> Error: Compila el programa primero.", "#ff5555");
-                return;
-            }
-            if (scanInterval) return; // Ya está corriendo
-
-            logConsola("> PLC en RUN. Ciclo de Scan activado (100ms)...", "#39A900");
-            
-            scanInterval = setInterval(() => {
-                try {
-                    // Ejecuta el código transpilado en el contexto del objeto PLC
-                    // Usamos new Function y el bloque 'with' para que actúe como entorno global
-                    let execFunc = new Function('PLC', `with(PLC) { ${compiledJS} }`);
-                    execFunc(PLC);
-                    
-                    actualizarHMI();
-                    actualizarWatchTable();
-                } catch (err) {
-                    logConsola("> Error en tiempo de ejecución: " + err.message, "#ff5555");
-                    detenerPLC();
-                }
-            }, 100);
-        }
-
-        function detenerPLC() {
-            if (scanInterval) {
-                clearInterval(scanInterval);
-                scanInterval = null;
-                logConsola("> PLC en STOP.", "#ffaa00");
-                
-                // Apagar salidas por seguridad
-                PLC.Motor_On = false;
-                PLC.Valvula_Llenado = false;
-                actualizarHMI();
-                actualizarWatchTable();
-            }
-        }
-
-        // Interacción desde HMI
-        function setVar(nombreVar, valor) {
-            if(PLC[nombreVar] !== undefined) {
-                PLC[nombreVar] = valor;
-                actualizarWatchTable();
-            }
-        }
-
-        // Actualizar la Interfaz Gráfica de la Planta Virtual
-        function actualizarHMI() {
-            // Animación Motor
-            const aspas = document.getElementById('aspas-visual');
-            if (PLC.Motor_On) {
-                aspas.classList.add('spin');
-            } else {
-                aspas.classList.remove('spin');
-            }
-
-            // Animación Tanque (Límite visual 0 a 100)
-            let nivelVisual = PLC.Nivel_Tanque;
-            if(nivelVisual > 100) nivelVisual = 100;
-            if(nivelVisual < 0) nivelVisual = 0;
-            document.getElementById('tanque-liquido').style.height = nivelVisual + "%";
-
-            // Animación Temperatura
-            document.getElementById('temp-display').innerText = PLC.Temperatura.toFixed(1) + " °C";
-        }
-
-        // Actualizar Tabla de Variables
-        function actualizarWatchTable() {
-            const tbody = document.getElementById('watch-table-body');
-            tbody.innerHTML = "";
-            for (let key in PLC) {
-                let tr = document.createElement('tr');
-                
-                let tdName = document.createElement('td');
-                tdName.innerText = key;
-                
-                let tdType = document.createElement('td');
-                tdType.innerText = DataTypes[key];
-                
-                let tdValue = document.createElement('td');
-                // Formato dependiente del tipo
-                if (DataTypes[key] === 'REAL') {
-                    tdValue.innerText = PLC[key].toFixed(2);
-                } else {
-                    tdValue.innerText = PLC[key].toString().toUpperCase();
-                }
-
-                tr.appendChild(tdName);
-                tr.appendChild(tdType);
-                tr.appendChild(tdValue);
-                tbody.appendChild(tr);
-            }
-        }
-
-        // Función auxiliar para imprimir en la consola virtual
-        function logConsola(msg, color="#e0e0e0") {
-            const consola = document.getElementById('consola');
-            consola.innerHTML += `<span style="color: ${color}">${msg}</span><br>`;
-            consola.scrollTop = consola.scrollHeight;
-        }
-
-        // Arranque de la app
-        window.onload = () => {
-            initMenu();
-            actualizarHMI();
-            actualizarWatchTable();
-        };
-
-    </script>
-</body>
-</html>
+                titulo: "4. Control de Mezcla (Proyecto)",
+                teoria: `<h3>Máquina de Estados (Caso de Uso)</h3>
+                         <p>Integraremos todo para hacer un proceso de BATCH (Mezclado):</p>
+                         <ul>
+                            <li>Al presionar START, la válvula llena el tanque.</li>
+                            <li>Cuando el nivel llegue a 80%, 
