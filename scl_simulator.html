@@ -20,8 +20,8 @@
             --bg-dark: #121212;
             --panel-dark: #1e1e1e;
             --text-light: #e0e0e0;
-            --text-dark: #333333;
-            --bg-white: #ffffff;
+            --text-dark: #222;
+            --bg-theory: #f5f5f5; /* Fondo claro para lectura cómoda */
             --border-color: #333;
         }
 
@@ -41,18 +41,18 @@
         header {
             background-color: var(--panel-dark);
             border-bottom: 3px solid var(--sena-green);
-            padding: 10px 20px;
+            padding: 10px 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .header-logo { height: 40px; }
-        .header-title { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; color: var(--text-light); }
+        .header-logo { height: 35px; }
+        .header-title { font-size: 1.2rem; font-weight: 700; color: var(--text-light); text-align: center; }
 
         /* MAIN LAYOUT (3 COLUMNAS) */
         .main-grid {
             display: grid;
-            grid-template-columns: 300px 1fr 350px;
+            grid-template-columns: 1fr 1.5fr 1fr;
             flex: 1;
             gap: 15px;
             padding: 15px;
@@ -76,6 +76,7 @@
             border-bottom: 1px solid var(--border-color);
             color: var(--sena-green);
             text-transform: uppercase;
+            font-size: 0.9rem;
         }
 
         /* COLUMNA 1: TEMARIO Y TEORÍA */
@@ -85,14 +86,14 @@
             padding: 10px;
             gap: 5px;
             background-color: #1a1a1a;
-            max-height: 250px;
+            max-height: 200px;
             overflow-y: auto;
         }
         .btn-leccion {
             background-color: #333;
             color: white;
             border: 1px solid #444;
-            padding: 8px 10px;
+            padding: 10px;
             text-align: left;
             cursor: pointer;
             border-radius: 4px;
@@ -106,17 +107,19 @@
 
         .teoria-container {
             flex: 1;
-            background-color: var(--bg-white);
+            background-color: var(--bg-theory);
             color: var(--text-dark);
             padding: 20px;
             overflow-y: auto;
             border-top: 2px solid var(--sena-green);
         }
-        .teoria-container h3 { margin-bottom: 15px; color: var(--sena-green); border-bottom: 1px solid #ddd; padding-bottom: 5px;}
+        .teoria-container h3 { margin-bottom: 15px; color: var(--sena-green); border-bottom: 2px solid #ddd; padding-bottom: 5px;}
+        .teoria-container h4 { margin-top: 15px; margin-bottom: 8px; color: #333; }
         .teoria-container p { margin-bottom: 12px; line-height: 1.6; font-size: 0.95rem; }
-        .teoria-container ul { margin-left: 20px; margin-bottom: 12px; font-size: 0.95rem;}
-        .teoria-container code { background: #f4f4f4; padding: 2px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; color: #d32f2f; font-weight: bold;}
-        .teoria-container pre { background: #2b2b2b; color: #a9b7c6; padding: 10px; border-radius: 5px; margin-bottom: 15px; overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 0.85rem;}
+        .teoria-container ul { margin-left: 20px; margin-bottom: 15px; font-size: 0.95rem;}
+        .teoria-container li { margin-bottom: 5px; }
+        .teoria-container code { background: #e0e0e0; padding: 2px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; color: #b71c1c; font-weight: bold;}
+        .teoria-container pre { background: #2b2b2b; color: #a9b7c6; padding: 12px; border-radius: 5px; margin-bottom: 15px; overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 0.85rem;}
 
         /* COLUMNA 2: EDITOR Y CONSOLA */
         .toolbar {
@@ -125,18 +128,18 @@
             gap: 10px;
             background-color: #252525;
             border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .btn {
-            padding: 8px 15px;
+            padding: 8px 12px;
             border: none;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
             color: white;
             transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-size: 0.85rem;
         }
         .btn-compile { background-color: #1976d2; }
         .btn-compile:hover { background-color: #115293; }
@@ -145,18 +148,18 @@
         .btn-stop { background-color: #d32f2f; }
         .btn-stop:hover { background-color: #b71c1c; }
 
-        .editor-container { flex: 1; display: flex; flex-direction: column; }
-        .CodeMirror { flex: 1; font-family: 'Fira Code', monospace; font-size: 15px; }
+        .editor-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .CodeMirror { flex: 1; font-family: 'Fira Code', monospace; font-size: 14px; height: 100%; }
 
         .consola {
-            height: 150px;
-            background-color: #0d0d0d;
+            height: 120px;
+            background-color: #000;
             color: #00ff00;
             font-family: 'Fira Code', monospace;
             padding: 10px;
             overflow-y: auto;
             border-top: 2px solid var(--border-color);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             line-height: 1.4;
         }
 
@@ -169,6 +172,7 @@
             align-items: center;
             background-color: #222;
             position: relative;
+            overflow-y: auto;
         }
 
         /* Indicadores LED */
@@ -201,7 +205,6 @@
         }
         .led.active-green { background-color: #00ff00; box-shadow: 0 0 10px #00ff00; }
         .led.active-red { background-color: #ff0000; box-shadow: 0 0 10px #ff0000; animation: blink 1s infinite; }
-
         @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0.4;} 100% {opacity: 1;} }
 
         /* Tanque y Motor */
@@ -223,13 +226,13 @@
             z-index: 2;
             position: relative;
         }
-        .aspas { width: 40px; height: 8px; background-color: #aaa; border-radius: 4px; }
+        .aspas { width: 40px; height: 8px; background-color: #ccc; border-radius: 4px; }
         .spin { animation: spinAnim 0.3s linear infinite; background-color: var(--sena-green); }
         @keyframes spinAnim { 100% { transform: rotate(360deg); } }
 
         .tanque {
             width: 140px;
-            height: 180px;
+            height: 160px;
             border: 4px solid #888;
             border-top: none;
             border-radius: 0 0 15px 15px;
@@ -250,7 +253,7 @@
             position: absolute;
             left: 5px;
             bottom: 5px;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.7);
             font-size: 0.7rem;
             font-family: monospace;
             z-index: 5;
@@ -262,7 +265,7 @@
             font-family: 'Fira Code', monospace;
             border: 2px solid #555;
             padding: 8px 15px;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             margin-bottom: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(255,0,0,0.2);
@@ -280,6 +283,7 @@
             font-size: 0.85rem;
             color: white;
             text-shadow: 1px 1px 2px black;
+            user-select: none; /* Previene seleccion en moviles */
         }
         .btn-hmi:active { transform: scale(0.92); box-shadow: inset 0 3px 5px rgba(0,0,0,0.8); }
         .hmi-start { background: linear-gradient(145deg, #4caf50, #2e7d32); }
@@ -287,14 +291,14 @@
 
         /* Watch Table */
         .watch-table-container {
-            height: 250px;
+            height: 200px;
             background-color: var(--bg-white);
             color: var(--text-dark);
             overflow-y: auto;
             border-top: 2px solid var(--sena-green);
         }
         table { width: 100%; border-collapse: collapse; font-family: 'Fira Code', monospace; font-size: 0.8rem; }
-        th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
+        th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
         th { background-color: #f2f2f2; position: sticky; top: 0; color: #333;}
         .val-true { color: #2e7d32; font-weight: bold; }
         .val-false { color: #c62828; font-weight: bold; }
@@ -304,12 +308,30 @@
         footer {
             background-color: var(--panel-dark);
             border-top: 1px solid var(--border-color);
-            padding: 12px 20px;
+            padding: 10px 15px;
             text-align: right;
             color: var(--sena-green);
             font-weight: bold;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+
+        /* RESPONSIVIDAD PARA MÓVILES */
+        @media (max-width: 992px) {
+            body {
+                height: auto;
+                overflow: auto; /* Permite scroll vertical en toda la pagina */
+            }
+            .main-grid {
+                grid-template-columns: 1fr; /* Una sola columna */
+                height: auto;
+                overflow: visible;
+            }
+            .column {
+                min-height: 500px; /* Altura mínima para que no se aplasten */
+            }
+            .editor-container {
+                min-height: 400px; /* El editor necesita espacio en móvil */
+            }
         }
     </style>
 </head>
@@ -325,7 +347,7 @@
     <!-- Contenido Principal -->
     <div class="main-grid">
         
-        <!-- Columna 1: Temario -->
+        <!-- Columna 1: Temario y Teoría -->
         <div class="column">
             <div class="col-header">MÓDULOS DE APRENDIZAJE</div>
             <div class="menu-lecciones" id="menu-lecciones"></div>
@@ -365,7 +387,7 @@
                     </div>
                 </div>
 
-                <!-- Planta -->
+                <!-- Planta Física -->
                 <div class="planta-wrapper">
                     <div class="motor-box" id="motor-visual">
                         <div class="aspas" id="aspas-visual"></div>
@@ -378,21 +400,21 @@
 
                 <div class="sensor-temp" id="temp-display">00.0 °C</div>
 
+                <p style="color:#aaa; font-size:0.75rem; margin-bottom:10px; text-align:center;">Mantén presionado los botones para simular pulsadores.</p>
                 <div class="hmi-buttons">
-                    <!-- Eventos táctiles y de ratón para emular un pulsador real -->
                     <button class="btn-hmi hmi-start" 
                         onmousedown="presionarBoton('Start_Button', true)" 
                         onmouseup="presionarBoton('Start_Button', false)" 
                         onmouseleave="presionarBoton('Start_Button', false)"
-                        ontouchstart="presionarBoton('Start_Button', true)"
-                        ontouchend="presionarBoton('Start_Button', false)">START</button>
+                        ontouchstart="presionarBoton('Start_Button', true); event.preventDefault();"
+                        ontouchend="presionarBoton('Start_Button', false); event.preventDefault();">START</button>
                     
                     <button class="btn-hmi hmi-stop" 
                         onmousedown="presionarBoton('Stop_Button', true)" 
                         onmouseup="presionarBoton('Stop_Button', false)" 
                         onmouseleave="presionarBoton('Stop_Button', false)"
-                        ontouchstart="presionarBoton('Stop_Button', true)"
-                        ontouchend="presionarBoton('Stop_Button', false)">STOP</button>
+                        ontouchstart="presionarBoton('Stop_Button', true); event.preventDefault();"
+                        ontouchend="presionarBoton('Stop_Button', false); event.preventDefault();">STOP</button>
                 </div>
             </div>
 
@@ -401,7 +423,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Variable (Tag)</th>
+                            <th>Tags Disponibles</th>
                             <th>Tipo</th>
                             <th>Valor</th>
                         </tr>
@@ -424,19 +446,13 @@
 
     <script>
         // ==========================================
-        // 1. CONFIGURACIÓN DEL EDITOR
+        // 1. CONFIGURACIÓN INICIAL (Variables Globales)
         // ==========================================
-        const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
-            lineNumbers: true,
-            mode: "pascal", // Usamos pascal por similitud sintáctica
-            theme: "darcula",
-            indentUnit: 4,
-            matchBrackets: true
-        });
+        let editor;
+        let scanInterval = null;
+        let compiledJS = "";
 
-        // ==========================================
-        // 2. ESTADO GLOBAL DEL PLC (Memoria)
-        // ==========================================
+        // ESTADO GLOBAL DEL PLC (Memoria)
         let PLC = {
             Start_Button: false, 
             Stop_Button: false,  
@@ -453,46 +469,31 @@
             Nivel_Tanque: 'REAL', Temperatura: 'REAL'
         };
 
-        let scanInterval = null;
-        let compiledJS = "";
-
         // ==========================================
-        // 3. MÓDULOS DE APRENDIZAJE (TEORÍA NORMA IEC 61131-3)
+        // 2. FUNDAMENTACIÓN TEÓRICA EXTENSA (IEC 61131-3)
         // ==========================================
         const lecciones = [
             {
-                titulo: "1. Fundamentos y Asignación",
-                teoria: `<h3>Sintaxis SCL (IEC 61131-3)</h3>
-                         <p>El Texto Estructurado (SCL) es un lenguaje de alto nivel basado en Pascal. Las características clave son:</p>
+                titulo: "1. Fundamentos SCL y Asignación",
+                teoria: `<h3>Introducción al SCL (Texto Estructurado)</h3>
+                         <p>El SCL (Structured Control Language) es un lenguaje de programación textual de alto nivel definido en la norma internacional <b>IEC 61131-3</b>. Está basado en Pascal y es ideal para el manejo de datos, algoritmos matemáticos complejos y bucles, donde los lenguajes gráficos (como Ladder o FUP) resultan ineficientes.</p>
+                         <h4>Tipos de Datos (Normativa IEC)</h4>
                          <ul>
-                            <li>La asignación de valores usa <code>:=</code> (ej. <code>Variable := 10;</code>).</li>
-                            <li>Toda instrucción debe terminar en punto y coma <code>;</code>.</li>
-                            <li>El símbolo <code>=</code> se usa <b>sólo</b> para comparar.</li>
-                            <li>Los comentarios se escriben con <code>//</code> o <code>(* ... *)</code>.</li>
+                            <li><b>BOOL:</b> Variables booleanas (<code>TRUE</code> o <code>FALSE</code>, 1 o 0). Ej: Sensores, Pulsadores, Motores.</li>
+                            <li><b>INT / DINT:</b> Enteros con signo (16 bits / 32 bits).</li>
+                            <li><b>REAL:</b> Números de punto flotante (con decimales). Ej: Nivel (%), Temperatura (°C), Presión (Bar).</li>
                          </ul>
-                         <p><b>Práctica:</b> Conecta directamente el pulsador de START al Motor.</p>`,
-                codigo: `// Asignación directa (Bobina directa en Ladder)\nMotor_On := Start_Button;\n\n// El tanque se llena solo si el motor está encendido\nValvula_Llenado := Motor_On;`
+                         <h4>El Operador de Asignación ( <code>:=</code> )</h4>
+                         <p>En SCL, la <b>asignación de valores</b> no se hace con un simple igual (<code>=</code>), sino con el operador <code>:=</code>. El símbolo <code>=</code> se usa estrictamente para <b>comparar</b>.</p>
+                         <p>Toda instrucción en SCL <b>debe finalizar con un punto y coma <code>;</code></b>.</p>
+                         <pre>Motor_On := TRUE; // Correcto\nMotor_On = TRUE;  // Error de sintaxis</pre>
+                         <h4>Práctica:</h4>
+                         <p>Observa la "Watch Table" (Tabla de variables). Tenemos <code>Start_Button</code>. Conecta esa variable directamente a la válvula. Mantén presionado el botón virtual START para ver el efecto.</p>`,
+                codigo: `// Asignación directa: \n// El estado de la salida copia el estado de la entrada\nValvula_Llenado := Start_Button;\n\n// El Motor se encenderá si la Válvula está abierta\nMotor_On := Valvula_Llenado;`
             },
             {
-                titulo: "2. Lógica Booleana y IF",
-                teoria: `<h3>Condicionales IF-THEN</h3>
-                         <p>Permiten ejecutar código basado en condiciones lógicas (AND, OR, NOT).</p>
-                         <pre>IF condicion THEN\n    sentencias;\nELSIF otra_condicion THEN\n    sentencias;\nELSE\n    sentencias;\nEND_IF;</pre>
-                         <p><b>Práctica:</b> Realiza un "Enclavamiento" (Set/Reset) para el Motor. Nota que los pulsadores HMI son de contacto momentáneo, por eso necesitas memorizar el estado.</p>`,
-                codigo: `// Lógica de SET (Arranque memorizado)\nIF Start_Button = TRUE THEN\n    Motor_On := TRUE;\nEND_IF;\n\n// Lógica de RESET (Parada)\nIF Stop_Button = TRUE THEN\n    Motor_On := FALSE;\nEND_IF;`
-            },
-            {
-                titulo: "3. Matemáticas Analógicas",
-                teoria: `<h3>Cálculos con Reales (REAL)</h3>
-                         <p>En SCL podemos utilizar operadores aritméticos (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>).</p>
-                         <p>En esta simulación, simularemos un transmisor de nivel. Si la válvula está abierta, sumamos líquido por cada ciclo de scan.</p>
-                         <p><i>Nota: En un PLC real, esto se hace en un OB cíclico (OB30) multiplicando por el Ts.</i></p>`,
-                codigo: `// Enclavamiento de válvula\nIF Start_Button THEN Valvula_Llenado := TRUE; END_IF;\nIF Stop_Button THEN Valvula_Llenado := FALSE; END_IF;\n\n// Integración matemática de nivel\nIF Valvula_Llenado THEN\n    Nivel_Tanque := Nivel_Tanque + 0.5;\nEND_IF;\n\n// Limitar el tanque y encender alarma\nIF Nivel_Tanque >= 100.0 THEN\n    Nivel_Tanque := 100.0;\n    Valvula_Llenado := FALSE;\n    Alarma_Nivel := TRUE;\nELSE\n    Alarma_Nivel := FALSE;\nEND_IF;`
-            },
-            {
-                titulo: "4. Control de Mezcla (Proyecto)",
-                teoria: `<h3>Máquina de Estados (Caso de Uso)</h3>
-                         <p>Integraremos todo para hacer un proceso de BATCH (Mezclado):</p>
-                         <ul>
-                            <li>Al presionar START, la válvula llena el tanque.</li>
-                            <li>Cuando el nivel llegue a 80%, 
+                titulo: "2. Operadores y Condicionales (IF)",
+                teoria: `<h3>Estructuras de Control: Condicionales</h3>
+                         <p>La sentencia <code>IF</code> permite evaluar una o más condiciones booleanas para ejecutar un bloque de código.</p>
+                         <h4>Sintaxis Estándar IEC:</h4>
+                         <pre>IF <condición_1> THEN\n    // Código si condición 1 es TRUE\nELSIF <condición_2> THEN\n    // Código si condición 2 es TRUE\nELSE\n    /
