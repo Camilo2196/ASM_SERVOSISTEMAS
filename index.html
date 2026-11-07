@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Aprendizaje - ASM Servosistemas</title>
+    
+    <!-- Fuentes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variables y Tema */
+        :root {
+            --sena-green: #39A900;
+            --sena-green-hover: #2d8500;
+            --bg-dark: #121212;
+            --panel-dark: #1e1e1e;
+            --text-light: #e0e0e0;
+            --border-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--panel-dark);
+            border-bottom: 3px solid var(--sena-green);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .header-logo {
+            height: 50px;
+        }
+
+        .header-title {
+            text-align: center;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            color: var(--sena-green);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .header-title h2 {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #aaa;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .intro-text {
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #bbb;
+        }
+
+        /* TARJETAS (CARDS) */
+        .cards-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1000px;
+        }
+
+        .card {
+            background-color: var(--panel-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            width: 320px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none; /* Quita el subrayado del link */
+            color: inherit;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(57, 169, 0, 0.2);
+            border-color: var(--sena-green);
+        }
+
+        .card-header {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background-color: #252525;
+            border-bottom: 2px solid var(--sena-green);
+        }
+
+        .card-body {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-body h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .card-body p {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .btn-card {
+            background-color: var(--sena-green);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: background-color 0.2s;
+        }
+
+        .card:hover .btn-card {
+            background-color: var(--sena-green-hover);
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: var(--panel-dark);
+            border-top: 1px solid var(--border-color);
+            padding: 15px 20px;
+            text-align: right;
+            color: var(--sena-green);
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; }
+            .header-title h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado -->
+    <header>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Sena_Colombia_logo.svg" alt="SENA" class="header-logo">
+        <div class="header-title">
+            <h1>TECNOLOGÍA EN AUTOMATIZACIÓN DE SISTEMAS MECATRÓNICOS</h1>
+            <h2>Área de Automatización Industrial - Servosistemas</h2>
+        </div>
+        <div style="width: 50px;"></div> <!-- Espaciador para equilibrar el flexbox -->
+    </header>
+
+    <!-- Contenido Principal -->
+    <main>
+        <div class="intro-text">
+            Bienvenido al portal interactivo de aprendizaje. Selecciona el módulo que deseas explorar a continuación para continuar con tu proceso de formación.
+        </div>
+
+        <div class="cards-container">
+            
+            <!-- TARJETA 1: Clase PID (El antiguo index) -->
+            <!-- NOTA: Asegúrate de renombrar tu index.html actual a clase_pid.html en tu repositorio -->
+            <a href="clase_pid.html" class="card">
+                <div class="card-header" style="color: #ff9800;">
+                    📊
+                </div>
+                <div class="card-body">
+                    <h3>Documentación PID y BATCH</h3>
+                    <p>Accede a la documentación técnica, guías de laboratorio y teoría sobre el control de procesos BATCH y el uso del bloque PID_COMPACT.</p>
+                    <div class="btn-card">IR A LA CLASE</div>
+                </div>
+            </a>
+
+            <!-- TARJETA 2: Simulador SCL -->
+            <a href="scl_simulator.html" class="card">
+                <div class="card-header" style="color: #03a9f4;">
+                    💻
+                </div>
+                <div class="card-body">
+                    <h3>Simulador Interactivo SCL</h3>
+                    <p>Aprende lenguaje de Texto Estructurado (SCL). Escribe código, compílalo en el navegador y controla una planta virtual en tiempo real.</p>
+                    <div class="btn-card">ABRIR SIMULADOR</div>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        Realizado por: ING. BRAYAN CAMILO NOREÑA AGUDELO
+    </footer>
+
+</body>
+</html>
