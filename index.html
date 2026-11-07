@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Control PID & Automatización Industrial | SENA CEAI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- MathJax CDN -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sena: {
+                            green: '#39A900',
+                            dark: '#00324D',
+                            light: '#e8f5e9',
+                            hover: '#2e8b00',
+                            accent: '#007832'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .code-container {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        .code-keyword { color: #f43f5e; font-weight: bold; }
+        .code-type { color: #38bdf8; font-weight: bold; }
+        .code-comment { color: #94a3b8; font-style: italic; }
+        .code-var { color: #facc15; }
+        .code-num { color: #a78bfa; }
+        .code-string { color: #34d399; }
+        .tab-btn.active {
+            background-color: #39A900;
+            color: white;
+            border-left: 4px solid #00324D;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen font-sans antialiased">
+
+    <!-- Top Notification Bar -->
+    <header class="bg-sena-dark text-white text-xs sm:text-sm py-2 px-4 shadow-md flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <!-- SENA LOGO SVG -->
+            <svg class="h-8 w-8 fill-current text-sena-green" viewBox="0 0 24 24">
+                <circle cx="12" cy="4" r="2.5"/>
+                <path d="M12 7.5c-2.8 0-5 1.5-5 3.5 0 .8.4 1.5 1 2.1l-2.2 4.9h2.8l1.3-3c.7.3 1.4.5 2.1.5s1.4-.2 2.1-.5l1.3 3h2.8l-2.2-4.9c.6-.6 1-1.3 1-2.1 0-2-2.2-3.5-5-3.5zm-2.8 3.5c0-.8 1.3-1.5 2.8-1.5s2.8.7 2.8 1.5c0 .7-.8 1.3-2 1.5v-1h-1.5v1c-1.3-.2-2.1-.8-2.1-1.5z"/>
+                <path d="M5.5 19.5h13v1.5h-13z"/>
+            </svg>
+            <div>
+                <span class="font-bold tracking-wide text-sena-green">SENA</span> | Centro de Electricidad y Automatización Industrial (C.E.A.I.)
+            </div>
+        </div>
+        <div class="hidden md:flex items-center space-x-4">
+            <span class="bg-sena-green/20 text-emerald-300 border border-sena-green/30 px-2 py-0.5 rounded text-xs">TIA Portal V16 & S7-1200</span>
+            <span class="text-slate-300 text-xs">Instructor: <strong class="text-white">Ing. Brayan Camilo Noreña Agudelo</strong></span>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col justify-between transition-all duration-300 fixed md:relative z-40 h-[calc(100vh-48px)] -translate-x-full md:translate-x-0">
+            <div class="py-4">
+                <div class="px-5 mb-4">
+                    <h2 class="text-xs uppercase tracking-wider text-slate-400 font-bold">Unidades de Aprendizaje</h2>
+                    <p class="text-[11px] text-slate-400">Control Proporcional Integral Derivativo</p>
+                </div>
+                <nav class="space-y-1">
+                    <button onclick="switchTab('mod-1')" id="btn-mod-1" class="tab-btn active w-full flex items-center px-5 py-3 text-sm font-medium text-left transition-colors duration-150 hover:bg-slate-800">
+                        <svg class="w-5 h-5 mr-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        1. Fundamentación Matemática
+                    </button>
+                    <button onclick="switchTab('mod-2')" id="btn-mod-2" class="tab-btn w-full flex items-center px-5 py-3 text-sm font-medium text-left transition-colors duration-150 hover:bg-slate-800">
+                        <svg class="w-5 h-5 mr-3 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+                        2. Simulador PID en Vivo
+                    </button>
+                    <button onclick="switchTab('mod-3')" id="btn-mod-3" class="tab-btn w-full flex items-center px-5 py-3 text-sm font-medium text-left transition-colors duration-150 hover:bg-slate-800">
+                        <svg class="w-5 h-5 mr-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                        3. Taller Guiado SCL (OB30)
+                    </button>
+                    <button onclick="switchTab('mod-4')" id="btn-mod-4" class="tab-btn w-full flex items-center px-5 py-3 text-sm font-medium text-left transition-colors duration-150 hover:bg-slate-800">
+                        <svg class="w-5 h-5 mr-3 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        4. Hardware S7-1200 & Señales
+                    </button>
+                    <button onclick="switchTab('mod-5')" id="btn-mod-5" class="tab-btn w-full flex items-center px-5 py-3 text-sm font-medium text-left transition-colors duration-150 hover:bg-slate-800">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        5. Sistema Batch (Fase 2)
+                    </button>
+                </nav>
+            </div>
+            <!-- Author Card -->
+            <div class="p-4 bg-slate-950 border-t border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <div class="h-9 w-9 rounded-full bg-sena-green text-white font-bold flex items-center justify-center text-sm shadow">
+                        BN
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-white">Ing. Brayan Camilo Noreña</p>
+                        <p class="text-[10px] text-slate-400">Automatización & Mecatrónica</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-100">
+            <!-- Mobile Toggle -->
+            <button onclick="toggleSidebar()" class="md:hidden mb-4 inline-flex items-center px-3 py-2 border border-slate-300 rounded-md text-sm text-slate-700 bg-white hover:bg-slate-50 shadow-sm">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                Menú de Navegación
+            </button>
+
+            <!-- ========================================== -->
+            <!-- MÓDULO 1: FUNDAMENTACIÓN MATEMÁTICA        -->
+            <!-- ========================================== -->
+            <section id="mod-1" class="content-section space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <span class="inline-block px-3 py-1 bg-emerald-100 text-sena-green font-semibold text-xs rounded-full mb-2">Fundamentos de Regulación Continua</span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Fundamentación Matemática: Del Cálculo Diferencial al PLC</h1>
+                    <p class="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed">
+                        A diferencia de la lógica booleana implementada en el bloque <code class="bg-slate-100 px-1 py-0.5 rounded text-rose-600 font-mono text-xs">IF Sensor_Presion > 10.5 THEN</code> de la pizarra, el control de variables térmicas requiere graduar la energía de forma continua entre el $0\%$ y el $100\%$ para evitar choques mecánicos, degradación de componentes y sobreimpulsos críticos.
+                    </p>
+                </div>
+
+                <!-- Continuous Math Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center">
+                        <span class="w-2 h-6 bg-sena-green rounded-full mr-3"></span>
+                        1. La Ecuación Continua Ideal (Dominio Temporal y Laplace)
+                    </h2>
+                    <p class="text-sm text-slate-700 leading-relaxed">
+                        En la literatura clásica de control (Ogata, Kuo, Seborg), el algoritmo PID ideal en tiempo continuo se expresa matemáticamente a través de una ecuación íntegro-diferencial:
+                    </p>
+
+                    <div class="bg-slate-900 text-emerald-400 p-4 rounded-lg overflow-x-auto text-center font-mono my-3 shadow-inner">
+                        $$u(t) = K_p \cdot e(t) + \frac{K_p}{T_i} \int_{0}^{t} e(\tau) d\tau + K_p \cdot T_d \frac{de(t)}{dt}$$
+                    </div>
+
+                    <p class="text-sm text-slate-700 leading-relaxed">
+                        En el dominio de la transformada de Laplace ($s$), asumiendo condiciones iniciales nulas, la función de transferencia del controlador $G_c(s)$ adopta la forma interactiva paralela estándar ISA:
+                    </p>
+
+                    <div class="bg-slate-900 text-sky-300 p-4 rounded-lg overflow-x-auto text-center font-mono my-3 shadow-inner">
+                        $$G_c(s) = \frac{U(s)}{E(s)} = K_p \left[ 1 + \frac{1}{T_i \cdot s} + T_d \cdot s \right]$$
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                            <h3 class="font-bold text-rose-700 text-sm">Término Proporcional ($P$)</h3>
+                            <p class="text-xs text-slate-600 mt-1">Reacciona a la magnitud del error <strong>presente</strong>: $P(t) = K_p \cdot e(t)$. Por sí solo, deja siempre un error en estado estacionario (offset) en procesos térmicos autoregulados.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                            <h3 class="font-bold text-sky-700 text-sm">Término Integral ($I$)</h3>
+                            <p class="text-xs text-slate-600 mt-1">Acumula la historia del error <strong>pasado</strong>. Su función física es forzar el error de estado estacionario a cero absoluto ($e_{ss} = 0$), pero introduce desfase y oscilación lenta.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                            <h3 class="font-bold text-amber-700 text-sm">Término Derivativo ($D$)</h3>
+                            <p class="text-xs text-slate-600 mt-1">Evalúa la velocidad de cambio proyectando el <strong>futuro</strong>. Actúa como freno anticipativo contra la inercia térmica, reduciendo el sobreimpulso (*overshoot*).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discretization Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center">
+                        <span class="w-2 h-6 bg-sena-green rounded-full mr-3"></span>
+                        2. El Salto Crucial: Discretización Numérica para PLCs
+                    </h2>
+                    <p class="text-sm text-slate-700 leading-relaxed">
+                        Un autómata programable como el <strong>SIMATIC S7-1200 CPU 1215C</strong> es una máquina secuencial digital sincronizada por un reloj de cuarzo. La CPU no puede calcular diferenciales infinitesimales ($dt$) ni integrales analógicas de línea continua ($\int$). Requiere aproximaciones numéricas sobre intervalos fijos de muestreo: $t = k \cdot T_s$.
+                    </p>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-4">
+                        <!-- Integral Discretization -->
+                        <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-lg space-y-2">
+                            <h3 class="font-bold text-emerald-900 text-sm flex items-center">
+                                <span class="w-3 h-3 bg-emerald-600 rounded-full mr-2"></span>
+                                Discretización Integral: Sumas de Riemann (Euler)
+                            </h3>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                El área bajo la curva del error se computa sumando rectángulos discretos de base $T_s$ y altura $e(k)$:
+                            </p>
+                            <div class="bg-slate-900 text-emerald-300 p-3 rounded font-mono text-xs shadow-inner">
+                                $$\int_{0}^{t} e(\tau)d\tau \approx \sum_{j=1}^{k} e(j) \cdot T_s$$
+                            </div>
+                            <p class="text-xs text-slate-700">
+                                Para no almacenar un vector infinito de muestras pasadas en la memoria de datos del PLC, se aplica una <strong>ecuación recursiva en diferencias</strong>:
+                            </p>
+                            <div class="bg-white border border-emerald-300 p-2 rounded font-mono text-xs text-emerald-800">
+                                $$S_I(k) = S_I(k-1) + \left( e(k) \cdot T_s \right)$$
+                                $$I(k) = \frac{K_p}{T_i} \cdot S_I(k)$$
+                            </div>
+                        </div>
+
+                        <!-- Derivative Discretization -->
+                        <div class="bg-sky-50 border border-sky-200 p-5 rounded-lg space-y-2">
+                            <h3 class="font-bold text-sky-900 text-sm flex items-center">
+                                <span class="w-3 h-3 bg-sky-600 rounded-full mr-2"></span>
+                                Discretización Derivativa: Diferencias Finitas
+                            </h3>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                La pendiente continua se calcula mediante la tasa de cambio entre dos instantes sucesivos de muestreo:
+                            </p>
+                            <div class="bg-slate-900 text-sky-300 p-3 rounded font-mono text-xs shadow-inner">
+                                $$\frac{de(t)}{dt} \approx \frac{e(k) - e(k-1)}{T_s}$$
+                            </div>
+                            <div class="p-3 bg-amber-50 border-l-4 border-amber-500 rounded text-amber-900 text-xs">
+                                <strong>¡Regla de Oro Industrial!</strong> Si el operador cambia bruscamente la consigna ($SP$), derivar sobre el error provoca un pulso numérico infinito: <em>Derivative Kick</em>. Por tanto, se deriva únicamente sobre la variable de proceso ($PV$):
+                            </div>
+                            <div class="bg-white border border-sky-300 p-2 rounded font-mono text-xs text-sky-800">
+                                $$D(k) = -K_p \cdot T_d \cdot \left[ \frac{PV(k) - PV(k-1)}{T_s} \right]$$
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anti-Windup Clamping Concept -->
+                    <div class="bg-slate-900 text-slate-200 p-5 rounded-lg border border-slate-700 space-y-3">
+                        <h3 class="text-amber-400 font-bold text-sm flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            Fenómeno de Saturación Integral (Integral Windup) & Clamping
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Si el actuador (la resistencia del tanque Batch) satura a su límite físico del $100\%$ pero el error térmico persiste, el acumulador $S_I(k)$ continuará sumando valores gigantescos. Cuando la temperatura supere los $60^\circ\text{C}$, el calentador no se apagará inmediatamente: tardará minutos en vaciar esa suma ficticia, provocando un sobreimpulso térmico devastador.
+                        </p>
+                        <p class="text-xs text-emerald-400 font-mono">
+                            Condición de Clamping: Si $u_{calc} \ge 100.0$ y $e(k) > 0$, o si $u_{calc} \le 0.0$ y $e(k) < 0$, CONGELAR $S_I(k) = S_I(k-1)$.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- MÓDULO 2: SIMULADOR PID EN TIEMPO REAL    -->
+            <!-- ========================================== -->
+            <section id="mod-2" class="content-section hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <span class="inline-block px-3 py-1 bg-sky-100 text-sky-800 font-semibold text-xs rounded-full mb-2">Laboratorio Virtual FOPDT</span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Simulador Interactivo del Lazo Térmico Batch</h1>
+                    <p class="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed">
+                        Experimenta el impacto dinámico de cada parámetro sobre un modelo térmico de Primer Orden más Tiempo Muerto (FOPDT): $\tau = 45\text{ s}$, $\theta = 4\text{ s}$, $K = 0.65^\circ\text{C}/\%$. Modifica los coeficientes y observa la estabilización en tiempo real.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Controls Panel -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
+                        <h2 class="text-lg font-bold text-slate-900 border-b pb-2 flex items-center justify-between">
+                            <span>Sintonización del PID</span>
+                            <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-mono">OB30: 100ms</span>
+                        </h2>
+
+                        <!-- SP Slider -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <label for="sim-sp" class="text-slate-700">Consigna (Set Point):</label>
+                                <span id="val-sp" class="text-sena-green font-mono">60.0 °C</span>
+                            </div>
+                            <input type="range" id="sim-sp" min="20" max="90" step="1" value="60" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sena-green" oninput="runSimulation()">
+                        </div>
+
+                        <!-- Kp Slider -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <label for="sim-kp" class="text-slate-700">Ganancia Proporcional ($K_p$):</label>
+                                <span id="val-kp" class="text-rose-600 font-mono">2.50</span>
+                            </div>
+                            <input type="range" id="sim-kp" min="0.1" max="15.0" step="0.1" value="2.5" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-rose-500" oninput="runSimulation()">
+                        </div>
+
+                        <!-- Ti Slider -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <label for="sim-ti" class="text-slate-700">Tiempo Integral ($T_i$ en seg):</label>
+                                <span id="val-ti" class="text-sky-600 font-mono">45.0 s</span>
+                            </div>
+                            <input type="range" id="sim-ti" min="2" max="150" step="1" value="45" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-500" oninput="runSimulation()">
+                            <p class="text-[10px] text-slate-400">Un valor menor hace la integral más agresiva.</p>
+                        </div>
+
+                        <!-- Td Slider -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <label for="sim-td" class="text-slate-700">Tiempo Derivativo ($T_d$ en seg):</label>
+                                <span id="val-td" class="text-amber-600 font-mono">2.0 s</span>
+                            </div>
+                            <input type="range" id="sim-td" min="0" max="15" step="0.2" value="2.0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500" oninput="runSimulation()">
+                        </div>
+
+                        <!-- Disturbance Checkbox -->
+                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <label class="text-xs font-semibold text-slate-700">Perturbación Externa (Agua Fría):</label>
+                            <input type="checkbox" id="sim-dist" class="w-4 h-4 text-sena-green rounded border-slate-300 focus:ring-sena-green" onchange="runSimulation()">
+                        </div>
+
+                        <!-- Reset Defaults Button -->
+                        <button onclick="resetSimDefaults()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors">
+                            Restablecer Valores Recomendados
+                        </button>
+                    </div>
+
+                    <!-- Chart Container & Performance Metrics -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex flex-wrap justify-between items-center mb-3">
+                                <h3 class="text-sm font-bold text-slate-800">Curva de Respuesta en el Tiempo (Escalón)</h3>
+                                <div class="flex items-center space-x-4 text-xs font-semibold">
+                                    <span class="flex items-center text-slate-400"><span class="w-3 h-0.5 bg-slate-400 mr-1.5"></span>Consigna ($SP$)</span>
+                                    <span class="flex items-center text-sena-green"><span class="w-3 h-3 rounded-full bg-sena-green mr-1.5"></span>Temp. Mezcla ($PV$)</span>
+                                    <span class="flex items-center text-rose-500"><span class="w-3 h-0.5 border-dashed border-t-2 border-rose-500 mr-1.5"></span>Potencia Resistencia ($CV$)</span>
+                                </div>
+                            </div>
+                            <div class="relative h-64 sm:h-72 w-full">
+                                <canvas id="pidChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Metric Badges -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-100">
+                            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-center">
+                                <span class="block text-[10px] text-slate-500 uppercase font-semibold">Sobreimpulso (Overshoot)</span>
+                                <span id="metric-overshoot" class="text-sm font-bold text-rose-600 font-mono">0.0 %</span>
+                            </div>
+                            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-center">
+                                <span class="block text-[10px] text-slate-500 uppercase font-semibold">Tiempo de Subida</span>
+                                <span id="metric-risetime" class="text-sm font-bold text-slate-800 font-mono">0.0 s</span>
+                            </div>
+                            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-center">
+                                <span class="block text-[10px] text-slate-500 uppercase font-semibold">Error Estacionario</span>
+                                <span id="metric-offset" class="text-sm font-bold text-emerald-600 font-mono">0.00 °C</span>
+                            </div>
+                            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-center">
+                                <span class="block text-[10px] text-slate-500 uppercase font-semibold">Estado del Lazo</span>
+                                <span id="metric-status" class="text-xs font-bold text-sena-green">Estable</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- MÓDULO 3: TALLER GUIADO DE SCL (OB30)      -->
+            <!-- ========================================== -->
+            <section id="mod-3" class="content-section hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <span class="inline-block px-3 py-1 bg-amber-100 text-amber-900 font-semibold text-xs rounded-full mb-2">Desarrollo Algorítmico sin Plantillas Resueltas</span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Taller Práctico de SCL: Construyendo tu propio FB_PID</h1>
+                    <p class="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed">
+                        Para ser un verdadero tecnólogo en mecatrónica del SENA, no basta con arrastrar un bloque de librería. En este taller construirás desde cero la lógica interna de un <strong>Bloque de Función (FB)</strong> en TIA Portal V16. Completa los desafíos lógicos en base a la matemática explicada.
+                    </p>
+                </div>
+
+                <!-- Callout OB30 Warning -->
+                <div class="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-lg">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-rose-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-xs font-bold text-rose-800 uppercase tracking-wide">Criterio Crítico de Arquitectura: ¿Por qué NUNCA en el OB1?</h3>
+                            <p class="text-xs text-rose-700 mt-1 leading-relaxed">
+                                En la pizarra llamaron su bloque condicional dentro de <strong>OB1</strong>. El tiempo de scan de OB1 fluctúa permanentemente ($1.8\text{ ms} \dots 14.5\text{ ms}$) según la carga de trabajo. Si utilizas ese tiempo variable como base de $\Delta t$ en las integrales o derivadas, el lazo oscilará sin control. El bloque de control PID debe ser llamado <strong>estrictamente en un OB de Interrupción Cíclica (OB30)</strong> configurado a un tiempo determinístico exacto (ej. $100\text{ ms}$).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Interface Table -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center">
+                        <span class="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs mr-2 font-mono">1</span>
+                        Definición de la Interfaz de Memoria del Bloque (FB_ControlPID)
+                    </h2>
+                    <p class="text-xs text-slate-600">
+                        Crea un nuevo bloque FB en TIA Portal, selecciona lenguaje <strong>SCL</strong> y declara exactamente estas variables en su cabecera:
+                    </p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border border-slate-200 rounded-lg">
+                            <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+                                <tr>
+                                    <th class="px-4 py-2 border-b">Sección</th>
+                                    <th class="px-4 py-2 border-b">Identificador</th>
+                                    <th class="px-4 py-2 border-b">Tipo de Dato</th>
+                                    <th class="px-4 py-2 border-b">Valor por Defecto</th>
+                                    <th class="px-4 py-2 border-b">Propósito Técnico</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 font-mono">
+                                <tr class="bg-white">
+                                    <td class="px-4 py-2 text-rose-600 font-bold">Input</td>
+                                    <td class="px-4 py-2">Enable</td>
+                                    <td class="px-4 py-2 text-sky-600">Bool</td>
+                                    <td class="px-4 py-2">FALSE</td>
+                                    <td class="px-4 py-2 font-sans text-slate-600">Habilita la ejecución matemática del lazo.</td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="px-4 py-2 text-rose-600 font-bold">Input</td>
+                                    <td class="px-4 py-2">SP</td>
+                                    <td class="px-4 py-2 text-sky-600">Real</td>
+                                    <td class="px-4 py-2">60.0</td>
+                                    <td class="px-4 py-2 font-sans text-slate-600">Consigna deseada de temperatura en °C.</td>
+                                </tr>
+                                <tr class="bg-white">
+                                    <td class="px-4 py-2 text-rose-600 font-bold">Input</td>
+                                    <td class="px-4 py-2">PV</td>
+                                    <td class="px-4 py-2 text-sky-600">Real</td>
+                                    <td class="px-4 py-2">0.0</td>
+                                    <td class="px-4 py-2 font-sans text-slate-600">Temperatura leída desde el transmisor analógico.</td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="px-4 py-2 text-rose-600 font-bold">Input</td>
+                                    <td class="px-4 py-2">Kp, Ti, Td</td>
+                                    <td class="px-4 py-2 text-sky-600">Real</td>
+                                    <td class="px-4 py-2">2.5, 45.0, 2.0</td>
+                                    <td class="px-4 py-2 font-sans text-slate-600">Parámetros de sintonía en unidades estándar.</td>
+                                </tr>
+                                <tr class="bg-white">
+                                    <td class="px-4 py-2 text-rose-600 font-bold">Input</td>
+                                    <td class="px-4 py-2">Cycle_Time</td>
+                                    <td class="px-4 py-2 text-sky-600">Real</td>
+                                    <td class="px-4 py-2">0.1</td>
+                                    <td class="px-4 py-2 font-sans text-slate-600">Período $T_s$ en segundos (debe igualar al OB30).</td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="px-4 py-2 text-emerald-600 font-bold">Output</td>
+                                    <td class="px-4 py-2">Out</td>
+                                    <td class="px-4 py-2 text-sky-600">Real</td>
+                                    <td class="px-4 py-2">0.0</td>
+                                    <td class="px-4 py-2 font-sans text-slate-600">Salida modulada en porcentaje ($0.0 \dots 100.0\%$).</td>
+                                </tr>
+                                <tr class="bg-white">
+                                    <td class="px-4 py-2 text-amber-600 font-bold">Static</td>
+                                    <td class="px-4 py-2">Integral_Sum</td>
+                                    <td class="px-4 py-2 text-sky-600">Real</td>
+                                    <td class="px-4 py-2">0.0</td>
+                                    <td class="px-4 py-2 font-sans text-slate-600">Memoria remanente para la suma acumulada de Riemann.</td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="px-4 py-2 text-amber-600 font-bold">Static</td>
+                                    <td class="px-4 py-2">PV_Prev</td>
+                                    <td class="px-4 py-2 text-sky-600">Real</td>
+                                    <td class="px-4 py-2">0.0</td>
+                                    <td class="px-4 py-2 font-sans text-slate-600">Almacena la muestra anterior $PV(k-1)$ para la derivada.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Step 2: Code Skeleton with Challenge Slots -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center">
+                        <span class="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs mr-2 font-mono">2</span>
+                        Estructura Base del Código SCL (Plantilla de Trabajo)
+                    </h2>
+                    <p class="text-xs text-slate-600">
+                        Copia la siguiente arquitectura dentro del editor de TIA Portal. Analiza cada desafío marcado en los comentarios y escribe la ecuación correspondiente:
+                    </p>
+
+                    <div class="code-container rounded-lg p-4 text-xs overflow-x-auto shadow-inner leading-relaxed">
+<pre><code><span class="code-comment">// =========================================================================</span>
+<span class="code-comment">// SENA CEAI - PROGRAMA TECNÓLOGO EN AUTOMATIZACIÓN DE SISTEMAS MECATRÓNICOS</span>
+<span class="code-comment">// ASIGNATURA: CONTROL REGULATORIO CONTINUO</span>
+<span class="code-comment">// INSTRUCTOR: ING. BRAYAN CAMILO NOREÑA AGUDELO</span>
+<span class="code-comment">// BLOQUE: FB_ControlPID_Batch</span>
+<span class="code-comment">// =========================================================================</span>
+
+<span class="code-keyword">IF NOT</span> #Enable <span class="code-keyword">THEN</span>
+    <span class="code-comment">// Reset seguro al apagar el lazo térmico</span>
+    #Out := <span class="code-num">0.0</span>;
+    #Integral_Sum := <span class="code-num">0.0</span>;
+    #PV_Prev := #PV;
+    <span class="code-keyword">RETURN</span>;
+<span class="code-keyword">END_IF</span>;
+
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+<span class="code-comment">// RETO 1: CÁLCULO DEL ERROR INSTANTÁNEO e(k)</span>
+<span class="code-comment">// Recuerda: El error es la diferencia entre la consigna deseada y lo medido</span>
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+#Error := <span class="code-comment">/* [ESCRIBA AQUÍ SU CÓDIGO SCL] */</span> ;
+
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+<span class="code-comment">// RETO 2: TÉRMINO PROPORCIONAL P(k)</span>
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+#P_Term := <span class="code-comment">/* [ESCRIBA AQUÍ SU CÓDIGO SCL] */</span> ;
+
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+<span class="code-comment">// RETO 3: TÉRMINO DERIVATIVO SOBRE PV (Sin Derivative Kick)</span>
+<span class="code-comment">// Pendiente = (PV actual - PV anterior) / Periodo de Muestreo</span>
+<span class="code-comment">// Multiplicado por Kp y Td con signo amortiguador</span>
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+<span class="code-keyword">IF</span> #Cycle_Time > <span class="code-num">0.0</span> <span class="code-keyword">THEN</span>
+    #Delta_PV := <span class="code-comment">/* [Calcule la pendiente] */</span> ;
+    #D_Term   := <span class="code-comment">/* [Calcule el término derivativo D] */</span> ;
+<span class="code-keyword">END_IF</span>;
+
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+<span class="code-comment">// RETO 4: TÉRMINO INTEGRAL Y PROTECCIÓN ANTI-WINDUP (Sumas de Riemann)</span>
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+#Integral_Candidate := #Integral_Sum + (#Error * #Cycle_Time);
+<span class="code-keyword">IF</span> #Ti > <span class="code-num">0.0</span> <span class="code-keyword">THEN</span>
+    #I_Term := (#Kp / #Ti) * #Integral_Candidate;
+<span class="code-keyword">END_IF</span>;
+
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+<span class="code-comment">// RETO 5: SUMA Y LIMITACIÓN A RANGO FÍSICO (0.0% a 100.0%)</span>
+<span class="code-comment">// Realice el Clamping para evitar que la integral crezca indefinidamente</span>
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+#Out_Unsat := #P_Term + #I_Term + #D_Term;
+
+<span class="code-keyword">IF</span> #Out_Unsat > <span class="code-num">100.0</span> <span class="code-keyword">THEN</span>
+    #Out := <span class="code-num">100.0</span>;
+    <span class="code-comment">// Condición de congelamiento de integral...</span>
+<span class="code-keyword">ELSIF</span> #Out_Unsat < <span class="code-num">0.0</span> <span class="code-keyword">THEN</span>
+    #Out := <span class="code-num">0.0</span>;
+    <span class="code-comment">// Condición de congelamiento de integral...</span>
+<span class="code-keyword">ELSE</span>
+    #Out := #Out_Unsat;
+    #Integral_Sum := #Integral_Candidate; <span class="code-comment">// Actualizar acumulación en zona lineal</span>
+<span class="code-keyword">END_IF</span>;
+
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+<span class="code-comment">// RETO 6: ACTUALIZACIÓN DE MEMORIA HISTÓRICA PARA EL PRÓXIMO CICLO</span>
+<span class="code-comment">// -------------------------------------------------------------------------</span>
+<span class="code-comment">/* [¿Qué variable estática debe actualizarse antes de salir del bloque?] */</span> ;
+</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- MÓDULO 4: HARDWARE S7-1200 & SEÑALES       -->
+            <!-- ========================================== -->
+            <section id="mod-4" class="content-section hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <span class="inline-block px-3 py-1 bg-rose-100 text-rose-800 font-semibold text-xs rounded-full mb-2">Integración de Campo</span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Hardware SIMATIC S7-1200 CPU 1215C AC/DC/RLY</h1>
+                    <p class="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed">
+                        Referencia técnica anotada en la pizarra: <strong>6ES7 215-1BG40-0XB0</strong>. Aterrizar la matemática al plano físico implica acondicionar señales y resolver las limitaciones electromecánicas de sus contactos de salida.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Scaling Card -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                        <h2 class="text-base font-bold text-slate-900 flex items-center">
+                            <span class="w-3 h-3 bg-emerald-500 rounded-full mr-2"></span>
+                            Acondicionamiento Analógico: NORM_X + SCALE_X
+                        </h2>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Las entradas analógicas integradas de la CPU 1215C (`AI 0` y `AI 1` / `%IW64`, `%IW66`) leen exclusivamente <strong>$0\text{ a }10\text{ V DC}$</strong> con resolución de 10 bits convertida por Siemens al rango estándar digital de $0 \dots 27648$ cuentas.
+                        </p>
+
+                        <!-- Visual representation of conversion -->
+                        <div class="bg-slate-900 p-4 rounded-lg text-white font-mono text-xs space-y-2">
+                            <div class="flex justify-between items-center text-slate-400">
+                                <span>Voltaje Físico</span>
+                                <span>Valor Crudo (Word)</span>
+                                <span>Normalizado (0..1)</span>
+                                <span>Temperatura Real</span>
+                            </div>
+                            <div class="flex justify-between items-center text-emerald-400 font-bold border-t border-slate-800 pt-2">
+                                <span>0.0 V</span>
+                                <span>0</span>
+                                <span>0.0</span>
+                                <span>0.0 °C</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sky-400 font-bold">
+                                <span>6.0 V</span>
+                                <span>16589</span>
+                                <span>0.60</span>
+                                <span>60.0 °C</span>
+                            </div>
+                            <div class="flex justify-between items-center text-rose-400 font-bold">
+                                <span>10.0 V</span>
+                                <span>27648</span>
+                                <span>1.0</span>
+                                <span>100.0 °C</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-slate-50 border rounded-lg text-xs space-y-1">
+                            <span class="font-bold text-slate-700">Fórmula de Conversión en SCL:</span>
+                            <div class="font-mono text-slate-800">#Norm := INT_TO_REAL(#Raw_Input) / 27648.0;</div>
+                            <div class="font-mono text-slate-800">#Temperatura_C := (#Norm * (100.0 - 0.0)) + 0.0;</div>
+                        </div>
+                    </div>
+
+                    <!-- Relay Actuation Problem & PWM Solution -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                        <h2 class="text-base font-bold text-slate-900 flex items-center">
+                            <span class="w-3 h-3 bg-rose-500 rounded-full mr-2"></span>
+                            El Desafío Físico del Relé (RLY) & Modulación PWM Lenta
+                        </h2>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Las salidas de esta CPU son a <strong>relé electromecánico</strong> (`DQ 0.4` para el Calentador). Un contacto de relé tiene una vida útil de aproximadamente $100.000$ operaciones mecánicas. Si se conecta a un PWM rápido (ej. $100\text{ ms}$), el relé se destruirá en menos de una hora.
+                        </p>
+
+                        <div class="p-4 bg-amber-50 border-l-4 border-amber-500 rounded text-xs space-y-2">
+                            <span class="font-bold text-amber-900">Solución Técnica: PWM de Base de Tiempo Extendida ($10\text{ s}$)</span>
+                            <p class="text-amber-800 leading-relaxed">
+                                Como el tanque del bacheo tiene una inercia térmica de minutos, modulamos sobre una ventana temporal de $10\text{ segundos}$ en un bloque cíclico:
+                            </p>
+                            <ul class="list-disc list-inside space-y-1 text-slate-700 font-mono">
+                                <li>Si PID Out = 25% → Calentador ON: 2.5s | OFF: 7.5s</li>
+                                <li>Si PID Out = 60% → Calentador ON: 6.0s | OFF: 4.0s</li>
+                                <li>Si PID Out = 90% → Calentador ON: 9.0s | OFF: 1.0s</li>
+                            </ul>
+                        </div>
+
+                        <!-- Relay Timeline Diagram -->
+                        <div class="border border-slate-200 rounded p-3 bg-slate-50 text-[11px] space-y-1.5">
+                            <span class="font-semibold text-slate-700">Comportamiento en un ciclo de 10s al 40% de Potencia:</span>
+                            <div class="w-full flex h-6 rounded overflow-hidden border border-slate-300">
+                                <div class="bg-rose-500 text-white flex items-center justify-center font-bold font-mono" style="width: 40%">
+                                    ON: 4s
+                                </div>
+                                <div class="bg-slate-300 text-slate-600 flex items-center justify-center font-bold font-mono" style="width: 60%">
+                                    OFF: 6s
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- MÓDULO 5: PROYECTO BATCH - FASE 2          -->
+            <!-- ========================================== -->
+            <section id="mod-5" class="content-section hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 font-semibold text-xs rounded-full mb-2">Integración al Proyecto Formativo</span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Fase 2 del Sistema Batch: Tratamiento Térmico</h1>
+                    <p class="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed">
+                        Según la guía oficial de aprendizaje del SENA (C.E.A.I.), la operación global se compone de <strong>Llenado</strong>, <strong>Tratamiento (Mezcla y Calentamiento)</strong> y <strong>Evacuación</strong>. A continuación se desglosa cómo se acopla el lazo PID dentro de la máquina de estados general.
+                    </p>
+                </div>
+
+                <!-- Sequence Flow Diagram -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center">
+                        <span class="w-2 h-6 bg-sena-green rounded-full mr-3"></span>
+                        Diagrama de Flujo y Coordinación de Bloques
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="border-2 border-slate-200 rounded-lg p-4 bg-slate-50 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2 py-0.5 bg-slate-200 text-slate-700 font-bold rounded">Paso 1</span>
+                                <span class="text-slate-400 font-mono">OB1 (Main)</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-sm">Fase 1: Llenado</h3>
+                            <p class="text-slate-600">Bomba 1 activa por 5s → Bomba 2 añade el segundo componente hasta censar `HI-LEVEL` (`I1.4`).</p>
+                            <div class="p-2 bg-emerald-100 text-emerald-800 rounded font-semibold text-center">Transición: Nivel Alto OK</div>
+                        </div>
+
+                        <div class="border-2 border-sena-green rounded-lg p-4 bg-emerald-50/50 space-y-2 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2 py-0.5 bg-sena-green text-white font-bold rounded">Paso 2</span>
+                                <span class="text-sena-green font-mono font-bold">OB1 + OB30</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-sm">Fase 2: Tratamiento (PID)</h3>
+                            <p class="text-slate-600">Pausa 5s → Agitador (inversión 5s Der / 5s Pausa / 5s Izq) + <strong>Lazo PID regulando a $60.0^\circ\text{C}$</strong>.</p>
+                            <div class="p-2 bg-sena-green text-white rounded font-semibold text-center">Transición: Temp = 60.0°C</div>
+                        </div>
+
+                        <div class="border-2 border-slate-200 rounded-lg p-4 bg-slate-50 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2 py-0.5 bg-slate-200 text-slate-700 font-bold rounded">Paso 3</span>
+                                <span class="text-slate-400 font-mono">OB1 (Main)</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-sm">Fase 3: Evacuación</h3>
+                            <p class="text-slate-600">Bomba 3 arranca en estrella-triángulo ($Y-\Delta$) y evacúa la mezcla hasta que se active el sensor `LOW-LEVEL` (`I1.3`).</p>
+                            <div class="p-2 bg-slate-200 text-slate-700 rounded font-semibold text-center">Reinicio: Contador de 5 Lotes</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-3 px-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div>
+            Servicio Nacional de Aprendizaje SENA | Regional Valle | Centro de Electricidad y Automatización Industrial (C.E.A.I.)
+        </div>
+        <div class="text-slate-300">
+            Realizado por: <strong class="text-sena-green">ING. BRAYAN CAMILO NOREÑA AGUDELO</strong>
+        </div>
+    </footer>
+
+    <!-- Interactive Simulator & Tabs Logic -->
+    <script>
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const activeSection = document.getElementById(tabId);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+            }
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // Close mobile menu if open
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.add('-translate-x-full');
+            }
+
+            // Trigger re-render of formulas or canvas if needed
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+            if (tabId === 'mod-2' && pidChartInstance) {
+                setTimeout(() => {
+                    pidChartInstance.resize();
+                    runSimulation();
+                }, 100);
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // =========================================================================
+        // SIMULADOR TÉRMICO FOPDT + PID EN TIEMPO REAL
+        // =========================================================================
+        let pidChartInstance = null;
+
+        function initChart() {
+            const ctx = document.getElementById('pidChart').getContext('2d');
+            pidChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Consigna SP (°C)',
+                            data: [],
+                            borderColor: '#94a3b8',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Temperatura PV (°C)',
+                            data: [],
+                            borderColor: '#39A900',
+                            backgroundColor: 'rgba(57, 169, 0, 0.08)',
+                            fill: true,
+                            borderWidth: 2.5,
+                            pointRadius: 0,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Salida Calentador CV (%)',
+                            data: [],
+                            borderColor: '#f43f5e',
+                            borderWidth: 1.5,
+                            borderDash: [2, 2],
+                            pointRadius: 0,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Tiempo de Proceso (Segundos)', font: { size: 10 } },
+                            ticks: { maxTicksLimit: 12, font: { size: 10 } }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            min: 15,
+                            max: 100,
+                            title: { display: true, text: 'Temperatura (°C)', font: { size: 10 } },
+                            ticks: { font: { size: 10 } }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            min: 0,
+                            max: 105,
+                            grid: { drawOnChartArea: false },
+                            title: { display: true, text: 'Potencia (%)', font: { size: 10 } },
+                            ticks: { font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function runSimulation() {
+            const sp = parseFloat(document.getElementById('sim-sp').value);
+            const Kp = parseFloat(document.getElementById('sim-kp').value);
+            const Ti = parseFloat(document.getElementById('sim-ti').value);
+            const Td = parseFloat(document.getElementById('sim-td').value);
+            const hasDisturbance = document.getElementById('sim-dist').checked;
+
+            document.getElementById('val-sp').innerText = sp.toFixed(1) + ' °C';
+            document.getElementById('val-kp').innerText = Kp.toFixed(2);
+            document.getElementById('val-ti').innerText = Ti.toFixed(1) + ' s';
+            document.getElementById('val-td').innerText = Td.toFixed(1) + ' s';
+
+            // Parámetros de la simulación
+            const dt = 0.5; // Tiempo de ciclo de resolución en s
+            const totalTime = 220; // 220 segundos de horizonte
+            const steps = Math.floor(totalTime / dt);
+
+            // Parámetros térmicos del tanque BATCH (FOPDT)
+            const Tamb = 22.0; // Temperatura ambiente
+            const K_plant = 0.65; // Ganancia térmica °C por % de potencia
+            const tau_plant = 45.0; // Constante de tiempo del líquido (45s)
+            const deadTimeSeconds = 4.0; // Tiempo muerto de transporte térmico
+            const delayBufferLength = Math.max(1, Math.round(deadTimeSeconds / dt));
+            const cvBuffer = new Array(delayBufferLength).fill(0);
+
+            let currentPV = Tamb;
+            let integralSum = 0;
+            let prevPV = Tamb;
+
+            const timeLabels = [];
+            const spData = [];
+            const pvData = [];
+            const cvData = [];
+
+            let maxPV = Tamb;
+            let riseTimeRecorded = false;
+            let riseTime = 0;
+
+            for (let i = 0; i < steps; i++) {
+                const t = i * dt;
+                timeLabels.push(t.toFixed(0));
+                spData.push(sp);
+
+                // Perturbación térmica a los 120s
+                let disturbanceCooling = 0;
+                if (hasDisturbance && t >= 120) {
+                    disturbanceCooling = 8.5; // Pérdida repentina por entrada de fluido frío
+                }
+
+                // Lazo PID Discreto
+                const error = sp - currentPV;
+                const pTerm = Kp * error;
+
+                // Derivada sobre PV para evitar Derivative Kick
+                const deltaPV = (currentPV - prevPV) / dt;
+                const dTerm = -1.0 * Kp * Td * deltaPV;
+
+                // Integral candidata
+                const integralCandidate = integralSum + (error * dt);
+                const iTerm = (Ti > 0) ? (Kp / Ti) * integralCandidate : 0;
+
+                // Salida preliminar sin saturar
+                const cvUnsat = pTerm + iTerm + dTerm;
+                let cvClamped = cvUnsat;
+
+                // Anti-Windup Clamping
+                if (cvUnsat > 100.0) {
+                    cvClamped = 100.0;
+                    if (error < 0) integralSum = integralCandidate; // Solo integra si ayuda a salir de saturación
+                } else if (cvUnsat < 0.0) {
+                    cvClamped = 0.0;
+                    if (error > 0) integralSum = integralCandidate;
+                } else {
+                    integralSum = integralCandidate; // Zona lineal normal
+                }
+
+                // Guardar valor en cola de retraso térmico (tiempo muerto)
+                cvBuffer.push(cvClamped);
+                const delayedCV = cvBuffer.shift();
+
+                // Modelo FOPDT continuo discretizado por Euler: dT/dt = (K*delayedCV - (T - Tamb))/tau
+                const dT = ((K_plant * delayedCV) - (currentPV - Tamb) - disturbanceCooling) / tau_plant;
+                prevPV = currentPV;
+                currentPV = currentPV + (dT * dt);
+
+                pvData.push(parseFloat(currentPV.toFixed(2)));
+                cvData.push(parseFloat(cvClamped.toFixed(1)));
+
+                // Registro de métricas
+                if (currentPV > maxPV) maxPV = currentPV;
+                if (!riseTimeRecorded && currentPV >= (sp * 0.9)) {
+                    riseTime = t;
+                    riseTimeRecorded = true;
+                }
+            }
+
+            // Calcular Métricas
+            const overshoot = Math.max(0, ((maxPV - sp) / sp) * 100);
+            const finalOffset = Math.abs(sp - currentPV);
+
+            document.getElementById('metric-overshoot').innerText = overshoot.toFixed(1) + ' %';
+            document.getElementById('metric-risetime').innerText = (riseTime > 0 ? riseTime.toFixed(1) + ' s' : '>200 s');
+            document.getElementById('metric-offset').innerText = finalOffset.toFixed(2) + ' °C';
+
+            const statusEl = document.getElementById('metric-status');
+            if (overshoot > 25.0 || finalOffset > 5.0) {
+                statusEl.innerText = 'Oscilatorio / Inestable';
+                statusEl.className = 'text-xs font-bold text-rose-600';
+            } else if (overshoot > 8.0) {
+                statusEl.innerText = 'Sub-amortiguado';
+                statusEl.className = 'text-xs font-bold text-amber-600';
+            } else {
+                statusEl.innerText = 'Óptimo Industrial';
+                statusEl.className = 'text-xs font-bold text-sena-green';
+            }
+
+            // Actualizar Chart.js
+            if (pidChartInstance) {
+                pidChartInstance.data.labels = timeLabels;
+                pidChartInstance.data.datasets[0].data = spData;
+                pidChartInstance.data.datasets[1].data = pvData;
+                pidChartInstance.data.datasets[2].data = cvData;
+                pidChartInstance.update();
+            }
+        }
+
+        function resetSimDefaults() {
+            document.getElementById('sim-sp').value = 60;
+            document.getElementById('sim-kp').value = 2.5;
+            document.getElementById('sim-ti').value = 45;
+            document.getElementById('sim-td').value = 2.0;
+            document.getElementById('sim-dist').checked = false;
+            runSimulation();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            runSimulation();
+        });
+    </script>
+</body>
+</html>
+
