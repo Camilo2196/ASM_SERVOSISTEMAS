@@ -1,28 +1,21 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador SCL - Automatización</title>
+    <title>Portal de Aprendizaje - ASM Servosistemas</title>
     
     <!-- Fuentes Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- CodeMirror CSS (Editor de Código) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/darcula.min.css">
-
     <style>
-        /* Variables y Tema Industrial Oscuro */
+        /* Variables y Tema */
         :root {
             --sena-green: #39A900;
             --sena-green-hover: #2d8500;
             --bg-dark: #121212;
             --panel-dark: #1e1e1e;
             --text-light: #e0e0e0;
-            --text-dark: #333333;
-            --bg-white: #ffffff;
             --border-color: #333;
         }
 
@@ -38,498 +31,205 @@
             color: var(--text-light);
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
         /* HEADER */
         header {
             background-color: var(--panel-dark);
             border-bottom: 3px solid var(--sena-green);
-            padding: 10px 20px;
+            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .header-logo {
-            height: 40px;
+            height: 50px;
         }
 
         .header-title {
-            font-size: 1.5rem;
-            font-weight: 700;
+            text-align: center;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            color: var(--sena-green);
             letter-spacing: 1px;
+            margin-bottom: 5px;
         }
 
-        /* MAIN LAYOUT (3 COLUMNAS) */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
+        .header-title h2 {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #aaa;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        main {
             flex: 1;
-            gap: 15px;
-            padding: 15px;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
         }
 
-        .column {
+        .intro-text {
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #bbb;
+        }
+
+        /* TARJETAS (CARDS) */
+        .cards-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1000px;
+        }
+
+        .card {
             background-color: var(--panel-dark);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
+            border-radius: 10px;
+            width: 320px;
             overflow: hidden;
-        }
-
-        .col-header {
-            background-color: #252525;
-            padding: 10px;
-            font-weight: bold;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--sena-green);
-        }
-
-        /* COLUMNA 1: TEMARIO Y TEORÍA */
-        .menu-lecciones {
+            transition: transform 0.3s, box-shadow 0.3s;
             display: flex;
             flex-direction: column;
-            padding: 10px;
-            gap: 5px;
+            text-decoration: none; /* Quita el subrayado del link */
+            color: inherit;
         }
 
-        .btn-leccion {
-            background-color: #333;
-            color: white;
-            border: 1px solid #444;
-            padding: 10px;
-            text-align: left;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: 0.2s;
-        }
-
-        .btn-leccion:hover, .btn-leccion.active {
-            background-color: var(--sena-green);
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(57, 169, 0, 0.2);
             border-color: var(--sena-green);
         }
 
-        .teoria-container {
-            flex: 1;
-            background-color: var(--bg-white);
-            color: var(--text-dark);
-            padding: 15px;
-            overflow-y: auto;
-            border-top: 2px solid var(--sena-green);
-        }
-        
-        .teoria-container h3 { margin-bottom: 10px; color: var(--sena-green); }
-        .teoria-container p { margin-bottom: 10px; line-height: 1.5; font-size: 0.9rem; }
-        .teoria-container code { background: #eee; padding: 2px 4px; border-radius: 3px; font-family: 'Fira Code', monospace; }
-
-        /* COLUMNA 2: EDITOR Y CONSOLA */
-        .toolbar {
+        .card-header {
+            height: 140px;
             display: flex;
-            padding: 10px;
-            gap: 10px;
-            background-color: #252525;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            color: white;
-            transition: 0.2s;
-        }
-
-        .btn-compile { background-color: #555; }
-        .btn-compile:hover { background-color: #777; }
-        .btn-run { background-color: var(--sena-green); }
-        .btn-run:hover { background-color: var(--sena-green-hover); }
-        .btn-stop { background-color: #d32f2f; }
-        .btn-stop:hover { background-color: #b71c1c; }
-
-        .editor-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .CodeMirror {
-            flex: 1;
-            font-family: 'Fira Code', monospace;
-            font-size: 14px;
-        }
-
-        .consola {
-            height: 120px;
-            background-color: #000;
-            color: #00ff00;
-            font-family: 'Fira Code', monospace;
-            padding: 10px;
-            overflow-y: auto;
-            border-top: 2px solid var(--border-color);
-            font-size: 0.85rem;
-        }
-
-        /* COLUMNA 3: SIMULACIÓN HMI */
-        .hmi-container {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            background-color: #2a2a2a;
-            position: relative;
-        }
-
-        /* Elementos HMI */
-        .motor-box {
-            width: 60px;
-            height: 60px;
-            background: #555;
-            border: 3px solid #777;
-            border-radius: 50%;
-            display: flex;
             justify-content: center;
-            align-items: center;
-            margin-bottom: -10px;
-            z-index: 2;
-            position: relative;
-        }
-        
-        .aspas {
-            width: 40px;
-            height: 10px;
-            background-color: #ccc;
-            border-radius: 5px;
+            font-size: 4rem;
+            background-color: #252525;
+            border-bottom: 2px solid var(--sena-green);
         }
 
-        .spin {
-            animation: spinAnim 0.5s linear infinite;
-            background-color: var(--sena-green); /* Cambia color al girar */
-        }
-
-        @keyframes spinAnim { 100% { transform: rotate(360deg); } }
-
-        .tanque {
-            width: 120px;
-            height: 180px;
-            border: 4px solid #888;
-            border-top: none;
-            border-radius: 0 0 10px 10px;
-            position: relative;
-            background-color: rgba(255,255,255,0.1);
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .liquido {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 0%; /* Controlado por JS */
-            background-color: #007bff;
-            transition: height 0.1s linear;
-        }
-
-        .sensor-temp {
-            background: #000;
-            color: red;
-            font-family: 'Fira Code', monospace;
-            border: 2px solid #555;
-            padding: 5px 10px;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-
-        .hmi-buttons {
+        .card-body {
+            padding: 25px;
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            flex: 1;
         }
 
-        .btn-hmi {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 4px solid #222;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        .card-body h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .card-body p {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .btn-card {
+            background-color: var(--sena-green);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 5px;
             font-weight: bold;
-        }
-        
-        .btn-hmi:active { transform: scale(0.95); }
-        .hmi-start { background-color: #4caf50; color: white; }
-        .hmi-stop { background-color: #f44336; color: white; }
-
-        /* Watch Table */
-        .watch-table-container {
-            height: 200px;
-            background-color: var(--bg-white);
-            color: var(--text-dark);
-            overflow-y: auto;
-            border-top: 2px solid var(--sena-green);
+            letter-spacing: 1px;
+            transition: background-color 0.2s;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 6px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            position: sticky;
-            top: 0;
+        .card:hover .btn-card {
+            background-color: var(--sena-green-hover);
         }
 
         /* FOOTER */
         footer {
             background-color: var(--panel-dark);
             border-top: 1px solid var(--border-color);
-            padding: 10px 20px;
+            padding: 15px 20px;
             text-align: right;
             color: var(--sena-green);
             font-weight: bold;
             font-size: 0.9rem;
+            margin-top: auto;
         }
 
+        /* Responsividad */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; }
+            .header-title h1 { font-size: 1.5rem; }
+        }
     </style>
 </head>
 <body>
 
     <!-- Encabezado -->
     <header>
-        <!-- Logo SENA público -->
         <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Sena_Colombia_logo.svg" alt="SENA" class="header-logo">
-        <div class="header-title">SIMULADOR SCL - TEXTO ESTRUCTURADO</div>
-        <div style="width: 40px;"></div> <!-- Espaciador para centrar -->
+        <div class="header-title">
+            <h1>TECNOLOGÍA EN AUTOMATIZACIÓN DE SISTEMAS MECATRÓNICOS</h1>
+            <h2>Área de Automatización Industrial - Servosistemas</h2>
+        </div>
+        <div style="width: 50px;"></div> <!-- Espaciador para equilibrar el flexbox -->
     </header>
 
     <!-- Contenido Principal -->
-    <div class="main-grid">
-        
-        <!-- Columna 1: Currículum -->
-        <div class="column">
-            <div class="col-header">TEMARIO</div>
-            <div class="menu-lecciones" id="menu-lecciones">
-                <!-- Se generan desde JS -->
-            </div>
-            <div class="teoria-container" id="teoria-content">
-                <h3>Bienvenido</h3>
-                <p>Selecciona una lección del menú superior para comenzar.</p>
-            </div>
+    <main>
+        <div class="intro-text">
+            Bienvenido al portal interactivo de aprendizaje. Selecciona el módulo que deseas explorar a continuación para continuar con tu proceso de formación.
         </div>
 
-        <!-- Columna 2: Editor y Consola -->
-        <div class="column">
-            <div class="col-header">EDITOR SCL (OB1)</div>
-            <div class="toolbar">
-                <button class="btn btn-compile" onclick="compilar()">⚙️ Compilar</button>
-                <button class="btn btn-run" onclick="iniciarPLC()">▶️ RUN</button>
-                <button class="btn btn-stop" onclick="detenerPLC()">⏹️ STOP</button>
-            </div>
-            <div class="editor-container">
-                <textarea id="code-editor"></textarea>
-            </div>
-            <div class="consola" id="consola">
-                > Sistema inicializado. Listo para programar.<br>
-            </div>
+        <div class="cards-container">
+            
+            <!-- TARJETA 1: Clase PID (El antiguo index) -->
+            <!-- NOTA: Asegúrate de renombrar tu index.html actual a clase_pid.html en tu repositorio -->
+            <a href="clase_pid.html" class="card">
+                <div class="card-header" style="color: #ff9800;">
+                    📊
+                </div>
+                <div class="card-body">
+                    <h3>Documentación PID y BATCH</h3>
+                    <p>Accede a la documentación técnica, guías de laboratorio y teoría sobre el control de procesos BATCH y el uso del bloque PID_COMPACT.</p>
+                    <div class="btn-card">IR A LA CLASE</div>
+                </div>
+            </a>
+
+            <!-- TARJETA 2: Simulador SCL -->
+            <a href="scl_simulator.html" class="card">
+                <div class="card-header" style="color: #03a9f4;">
+                    💻
+                </div>
+                <div class="card-body">
+                    <h3>Simulador Interactivo SCL</h3>
+                    <p>Aprende lenguaje de Texto Estructurado (SCL). Escribe código, compílalo en el navegador y controla una planta virtual en tiempo real.</p>
+                    <div class="btn-card">ABRIR SIMULADOR</div>
+                </div>
+            </a>
+
         </div>
+    </main>
 
-        <!-- Columna 3: Planta Virtual y Watch Table -->
-        <div class="column">
-            <div class="col-header">HMI Y WATCH TABLE</div>
-            <div class="hmi-container">
-                
-                <!-- Motor -->
-                <div class="motor-box" id="motor-visual">
-                    <div class="aspas" id="aspas-visual"></div>
-                </div>
-                
-                <!-- Tanque -->
-                <div class="tanque">
-                    <div class="liquido" id="tanque-liquido"></div>
-                </div>
-
-                <!-- Sensor Temperatura -->
-                <div class="sensor-temp" id="temp-display">00.0 °C</div>
-
-                <!-- Botonera Física -->
-                <div class="hmi-buttons">
-                    <button class="btn-hmi hmi-start" onmousedown="setVar('Start_Button', true)" onmouseup="setVar('Start_Button', false)" onmouseleave="setVar('Start_Button', false)">START</button>
-                    <button class="btn-hmi hmi-stop" onmousedown="setVar('Stop_Button', true)" onmouseup="setVar('Stop_Button', false)" onmouseleave="setVar('Stop_Button', false)">STOP</button>
-                </div>
-            </div>
-
-            <!-- Tabla de Variables -->
-            <div class="watch-table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Tipo</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
-                    <tbody id="watch-table-body">
-                        <!-- Generado por JS -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Pie de página con firma requerida -->
+    <!-- Pie de página -->
     <footer>
         Realizado por: ING. BRAYAN CAMILO NOREÑA AGUDELO
     </footer>
 
-    <!-- Scripts de CodeMirror -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/pascal/pascal.min.js"></script>
-
-    <script>
-        // ==========================================
-        // 1. CONFIGURACIÓN DEL EDITOR (CodeMirror)
-        // ==========================================
-        const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
-            lineNumbers: true,
-            mode: "pascal", // Pascal es visualmente el más cercano a SCL
-            theme: "darcula",
-            indentUnit: 4,
-            matchBrackets: true
-        });
-
-        // ==========================================
-        // 2. ESTADO GLOBAL DEL PLC (Memoria Virtual)
-        // ==========================================
-        let PLC = {
-            Start_Button: false, // BOOL
-            Stop_Button: false,  // BOOL
-            Motor_On: false,     // BOOL
-            Valvula_Llenado: false, // BOOL
-            Valvula_Vaciado: false, // BOOL
-            Nivel_Tanque: 0.0,   // REAL (0 a 100)
-            Temperatura: 25.0    // REAL
-        };
-
-        // Tipos de datos para la Watch Table
-        const DataTypes = {
-            Start_Button: 'BOOL', Stop_Button: 'BOOL', Motor_On: 'BOOL', 
-            Valvula_Llenado: 'BOOL', Valvula_Vaciado: 'BOOL', 
-            Nivel_Tanque: 'REAL', Temperatura: 'REAL'
-        };
-
-        let scanInterval = null;
-        let compiledJS = "";
-
-        // ==========================================
-        // 3. LECCIONES Y TEORÍA (Curriculum)
-        // ==========================================
-        const lecciones = [
-            {
-                titulo: "L1: Asignaciones Básicas",
-                teoria: `<h3>Asignaciones en SCL</h3>
-                         <p>En el lenguaje SCL (Texto Estructurado), la asignación de valores a una variable no se hace con un simple igual (<code>=</code>), sino con el operador <code>:=</code>.</p>
-                         <p>El símbolo <code>=</code> se usa estrictamente para comparar (ej. <code>IF a = b THEN</code>).</p>
-                         <p><b>Nota:</b> Mantén presionado el botón START en el HMI para probar este código.</p>`,
-                codigo: `// Asigna directamente el estado del botón al motor\nMotor_On := Start_Button;\n\n// El nivel sube lentamente si el motor gira\nValvula_Llenado := Motor_On;`
-            },
-            {
-                titulo: "L2: Condicional IF-ELSE",
-                teoria: `<h3>Estructuras de Control (IF)</h3>
-                         <p>Las sentencias condicionales permiten tomar decisiones lógicas en el PLC.</p>
-                         <p>Sintaxis básica:</p>
-                         <code>IF condicion THEN<br>&nbsp;&nbsp;accion;<br>END_IF;</code>
-                         <p>Ejemplo clásico: Enclavamiento (Set/Reset) sin usar bloques.</p>`,
-                codigo: `// Lógica de Set (Arranque)\nIF Start_Button = TRUE THEN\n    Motor_On := TRUE;\nEND_IF;\n\n// Lógica de Reset (Parada)\nIF Stop_Button = TRUE THEN\n    Motor_On := FALSE;\nEND_IF;`
-            },
-            {
-                titulo: "L3: Matemáticas Analógicas",
-                teoria: `<h3>Operaciones y Escalado</h3>
-                         <p>SCL es ideal para operaciones matemáticas con variables tipo REAL (Punto flotante).</p>
-                         <p>En esta lección simularemos que si la válvula está abierta, el nivel del tanque aumenta. Si supera 100, se detiene.</p>`,
-                codigo: `IF Start_Button THEN\n    Valvula_Llenado := TRUE;\nEND_IF;\n\nIF Stop_Button THEN\n    Valvula_Llenado := FALSE;\nEND_IF;\n\n// Matemáticas simples de simulación\nIF Valvula_Llenado = TRUE THEN\n    Nivel_Tanque := Nivel_Tanque + 0.5;\nEND_IF;\n\n// Limitar el nivel al 100%\nIF Nivel_Tanque > 100.0 THEN\n    Nivel_Tanque := 100.0;\n    Valvula_Llenado := FALSE;\n    Motor_On := TRUE; // Encender agitador\nEND_IF;`
-            },
-            {
-                titulo: "L4: Control BATCH (Final)",
-                teoria: `<h3>Proyecto: Control de Mezcla</h3>
-                         <p>Une todo lo aprendido: 1. Presiona START para llenar. 2. Al llegar a 80%, cierra la válvula y enciende el motor agitador. 3. Presiona STOP para vaciar el tanque y apagar todo.</p>`,
-                codigo: `// Control de Vaciado y Parada Emergencia\nIF Stop_Button THEN\n    Valvula_Llenado := FALSE;\n    Motor_On := FALSE;\n    Nivel_Tanque := 0.0; // Vaciado rápido\nEND_IF;\n\n// Control de Llenado\nIF Start_Button AND Nivel_Tanque < 80.0 THEN\n    Valvula_Llenado := TRUE;\n    Motor_On := FALSE;\nEND_IF;\n\nIF Valvula_Llenado THEN\n    Nivel_Tanque := Nivel_Tanque + 1.0;\nEND_IF;\n\n// Control del Agitador al llegar al SetPoint\nIF Nivel_Tanque >= 80.0 THEN\n    Valvula_Llenado := FALSE;\n    Motor_On := TRUE;\n    // Aumentar temperatura por agitación\n    Temperatura := Temperatura + 0.1;\nEND_IF;\n\n// Reset de temperatura al vaciar\nIF Nivel_Tanque = 0.0 THEN\n    Temperatura := 25.0;\nEND_IF;`
-            }
-        ];
-
-        // Inicializar Menú
-        function initMenu() {
-            const menu = document.getElementById('menu-lecciones');
-            lecciones.forEach((lec, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-leccion';
-                btn.innerText = lec.titulo;
-                btn.onclick = () => cargarLeccion(index, btn);
-                menu.appendChild(btn);
-            });
-            // Cargar la primera por defecto
-            cargarLeccion(0, menu.firstChild);
-        }
-
-        function cargarLeccion(index, btnNode) {
-            // Actualizar botones
-            document.querySelectorAll('.btn-leccion').forEach(b => b.classList.remove('active'));
-            if(btnNode) btnNode.classList.add('active');
-
-            // Actualizar teoría
-            document.getElementById('teoria-content').innerHTML = lecciones[index].teoria;
-            
-            // Cargar código
-            editor.setValue(lecciones[index].codigo);
-            detenerPLC(); // Por seguridad detener al cambiar lección
-        }
-
-        // ==========================================
-        // 4. LÓGICA DEL "COMPILADOR" (Transpilador SCL a JS)
-        // ==========================================
-        function compilar() {
-            detenerPLC();
-            let sclCode = editor.getValue();
-            
-            try {
-                // Parseo ligero mediante Expresiones Regulares
-                let jsCode = sclCode;
-
-                // 1. Comentarios de bloque (* ... *) a /* ... */
-                jsCode = jsCode.replace(/\(\*/g, '/*').replace(/\*\)/g, '*/');
-                
-                // 2. Comparaciones (SCL usa '=' para comparar, JS usa '==')
-                // Primero protegemos el := para no dañarlo
-                jsCode = jsCode.replace(/:=/g, '___ASSIGN___');
-                jsCode = jsCode.replace(/(?<![<>=!])=(?![=])/g, '=='); // Convierte = suelto en ==
-                jsCode = jsCode.replace(/___ASSIGN___/g, '='); // Devuelve el operador de asignación convertido a JS
-
-                // 3. Estructuras de Control (Mayúsculas o minúsculas)
-                jsCode = jsCode.replace(/\bIF\b/gi, 'if(');
-                jsCode = jsCode.replace(/\bTHEN\b/gi, '){');
-                jsCode = jsCode.replace(/\bELSIF\b/gi, '}else if(');
-                jsCode = jsCode.replace(/\bELSE\b/gi, '}else{');
-                jsCode = jsCode.replace(/\bEND_IF;?/gi, '}');
-
-                // 4. Operadores lógicos
-                jsCode = jsCode.replace(/\bAND\b/gi, '&&');
-                jsCode = jsCode.replace(/\bOR\b/gi, '||');
-                jsCode = jsCode.replace(/\bNOT\b/gi, '!');
-
-                // 5. booleanos
-          
+</body>
+</html>
